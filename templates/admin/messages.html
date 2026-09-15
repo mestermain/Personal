@@ -1,0 +1,84 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Messages Inbox{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-theme-subtle pb-4">
+        <div>
+            <h1 class="text-xl sm:text-2xl font-extrabold text-theme-primary uppercase tracking-tight font-sans">Contact Messages Inbox</h1>
+            <p class="text-theme-muted text-xs font-mono mt-1">Review, read, and manage inquiries sent from your portfolio website contact form.</p>
+        </div>
+    </div>
+
+    <!-- Inbox List Card -->
+    <div class="card-editorial p-5 sm:p-6">
+        {% if messages %}
+            <!-- Search Control -->
+            <div class="mb-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div class="relative w-full max-w-sm">
+                    <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-theme-muted text-xs"></i>
+                    <input type="text" id="messageSearchInput" placeholder="Search by sender name, email, or subject..." class="form-input-pro ps-9 py-2 text-xs">
+                </div>
+                <span class="text-xs font-mono text-theme-muted">Total: {{ messages|length }} Messages</span>
+            </div>
+
+            <div class="table-responsive">
+                <table id="messagesTable" class="table align-middle mb-0 text-xs table-responsive-cards">
+                    <thead>
+                        <tr class="text-theme-muted font-mono uppercase border-b border-theme-subtle">
+                            <th>Status</th>
+                            <th>Sender</th>
+                            <th>Email</th>
+                            <th>Subject</th>
+                            <th>Received Date</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for msg in messages %}
+                            <tr class="border-b border-theme-subtle {{ 'bg-[#C62828]/10' if not msg.is_read }}">
+                                <td data-label="Status">
+                                    {% if msg.is_read %}
+                                        <span class="tag-pill text-[10px]">READ</span>
+                                    {% else %}
+                                        <span class="tag-red text-[10px]">UNREAD</span>
+                                    {% endif %}
+                                </td>
+                                <td data-label="Sender" class="text-theme-title font-bold text-sm">{{ msg.sender_name }}</td>
+                                <td data-label="Email" class="text-theme-muted">
+                                    <a href="mailto:{{ msg.sender_email }}" class="text-[#C62828] font-semibold hover:underline text-decoration-none">{{ msg.sender_email }}</a>
+                                </td>
+                                <td data-label="Subject" class="text-theme-title font-semibold truncate max-w-xs">{{ msg.subject }}</td>
+                                <td data-label="Date" class="text-theme-muted font-mono text-xs">{{ msg.created_at.strftime('%b %d, %Y - %H:%M') }}</td>
+                                <td data-label="Actions" class="text-end">
+                                    <div class="flex flex-wrap items-center justify-end gap-2">
+                                        <a href="{{ url_for('admin.view_message', id=msg.id) }}" class="btn-theme-outline py-1 px-3 text-xs">
+                                            <i class="fas fa-book-open me-1 text-[10px]"></i> Read
+                                        </a>
+
+                                        <form action="{{ url_for('admin.toggle_message_read', id=msg.id) }}" method="POST" class="d-inline">
+                                            <button type="submit" class="btn-theme-outline py-1 px-3 text-xs">
+                                                <i class="fas {{ 'fa-envelope' if msg.is_read else 'fa-envelope-open' }} me-1"></i>
+                                                {{ 'Mark Unread' if msg.is_read else 'Mark Read' }}
+                                            </button>
+                                        </form>
+
+                                        <form action="{{ url_for('admin.delete_message', id=msg.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete message permanently?');">
+                                            <button type="submit" class="btn-theme-primary py-1 px-3 text-xs">
+                                                <i class="fas fa-trash me-1"></i> Delete
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-theme-muted text-xs font-mono py-6 text-center">No messages received yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

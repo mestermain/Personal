@@ -1,0 +1,483 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- HERO SECTION -->
+<section id="hero" class="py-12 sm:py-16 bg-theme-primary border-b border-theme-subtle">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            
+            <!-- Hero Left Content -->
+            <div class="lg:col-span-7 space-y-4 text-center lg:text-left">
+                <div class="section-badge">
+                    <span class="w-2 h-2 rounded-full bg-current"></span>
+                    <span>COMPUTER SCIENCE & AI</span>
+                </div>
+
+                <h1 class="text-3xl sm:text-5xl font-extrabold text-theme-primary tracking-tight leading-[1.1] font-sans">
+                    Building with <span class="underline decoration-[#E53935] underline-offset-4">code</span>, data & intelligence.
+                </h1>
+                
+                <p class="text-lg font-semibold text-theme-secondary">
+                    {{ profile.job_title }}
+                </p>
+
+                <p class="text-sm sm:text-base text-theme-muted leading-relaxed max-w-2xl mx-auto lg:mx-0 font-normal">
+                    {{ profile.hero_subheadline }}
+                </p>
+
+                <!-- Hero Actions -->
+                <div class="flex flex-wrap items-center justify-center lg:justify-start gap-3 pt-2">
+                    <a href="#projects" class="btn-theme-primary py-2.5 px-5 text-xs">
+                        VIEW PROJECTS <i class="fas fa-arrow-right text-[10px]"></i>
+                    </a>
+                    
+                    <a href="#contact" class="btn-theme-outline py-2.5 px-5 text-xs">
+                        CONTACT ME
+                    </a>
+                    
+                    {% if profile.resume_url and profile.resume_url != '#' %}
+                    <a href="{{ profile.resume_url }}" target="_blank" class="px-3 py-2 text-xs font-bold text-theme-primary hover:underline transition-colors inline-flex items-center gap-1.5 text-decoration-none">
+                        <i class="fas fa-file-arrow-down"></i> RESUME PDF ↗
+                    </a>
+                    {% endif %}
+                </div>
+
+                <!-- Connect Social Bar -->
+                <div class="pt-4 flex items-center justify-center lg:justify-start gap-4 text-theme-muted text-xs font-mono">
+                    <span class="opacity-70 uppercase tracking-wider">Connect:</span>
+                    {% if profile.github_url %}
+                        <a href="{{ profile.github_url }}" target="_blank" class="text-theme-primary hover:underline font-bold transition-colors text-decoration-none">GitHub ↗</a>
+                    {% endif %}
+                    {% if profile.linkedin_url %}
+                        <a href="{{ profile.linkedin_url }}" target="_blank" class="text-theme-primary hover:underline font-bold transition-colors text-decoration-none">LinkedIn ↗</a>
+                    {% endif %}
+                    {% if profile.twitter_url %}
+                        <a href="{{ profile.twitter_url }}" target="_blank" class="text-theme-primary hover:underline font-bold transition-colors text-decoration-none">Twitter ↗</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Hero Right Avatar Frame -->
+            <div class="lg:col-span-5 flex justify-center">
+                <div class="hero-avatar-box-theme w-64 sm:w-72">
+                    <div class="w-full h-72 sm:h-80 overflow-hidden rounded-lg">
+                        <img src="{{ profile.avatar_url }}" alt="{{ profile.full_name }}" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-2.5 bg-theme-card text-theme-title border-t border-theme-subtle flex items-center justify-between text-xs font-mono rounded-b-lg">
+                        <span class="font-bold">{{ profile.full_name }}</span>
+                        <span class="text-[#C62828] font-bold">RESEARCH & DEV</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- DYNAMIC REAL STATS COUNTER BAR -->
+{% if profile.years_experience > 0 or projects_count > 0 or research_count > 0 %}
+<section class="py-6 bg-theme-secondary border-b border-theme-subtle">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-wrap items-center justify-around gap-6 text-center">
+            
+            {% if profile.years_experience > 0 %}
+            <div class="p-1">
+                <div class="text-2xl sm:text-4xl font-extrabold text-theme-primary font-mono">{{ profile.years_experience }}+</div>
+                <div class="text-[11px] text-theme-primary mt-0.5 font-bold uppercase tracking-wider">Years Experience</div>
+            </div>
+            {% endif %}
+
+            {% if projects_count > 0 %}
+            <div class="p-1">
+                <div class="text-2xl sm:text-4xl font-extrabold text-theme-primary font-mono">{{ projects_count }}</div>
+                <div class="text-[11px] text-theme-primary mt-0.5 font-bold uppercase tracking-wider">Projects Built</div>
+            </div>
+            {% endif %}
+
+            {% if research_count > 0 %}
+            <div class="p-1">
+                <div class="text-2xl sm:text-4xl font-extrabold text-theme-primary font-mono">{{ research_count }}</div>
+                <div class="text-[11px] text-theme-primary mt-0.5 font-bold uppercase tracking-wider">Research Papers</div>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- ABOUT SECTION -->
+<section id="about" class="py-10 sm:py-14 bg-theme-primary border-b border-theme-subtle">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="flex items-center gap-3 mb-6">
+            <span class="section-num">01 //</span>
+            <h2 class="text-xl sm:text-2xl font-extrabold text-theme-primary uppercase tracking-tight">About & Background</h2>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div class="lg:col-span-7 space-y-4">
+                <p class="text-base text-theme-primary font-semibold leading-relaxed">
+                    {{ profile.about_summary }}
+                </p>
+                <p class="text-theme-secondary leading-relaxed text-sm">
+                    {{ profile.about_detailed }}
+                </p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                    <div class="card-editorial p-4 flex items-center gap-3">
+                        <i class="fas fa-location-dot text-[#C62828] text-base"></i>
+                        <div>
+                            <div class="text-[11px] text-theme-muted font-mono uppercase">Location</div>
+                            <div class="text-xs font-bold text-theme-title">{{ profile.location }}</div>
+                        </div>
+                    </div>
+
+                    <div class="card-editorial p-4 flex items-center gap-3">
+                        <i class="fas fa-envelope text-[#C62828] text-base"></i>
+                        <div>
+                            <div class="text-[11px] text-theme-muted font-mono uppercase">Direct Email</div>
+                            <div class="text-xs font-bold text-theme-title">{{ profile.email }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-5">
+                <div class="card-editorial p-5 sm:p-6 work-card-accent space-y-3">
+                    <h4 class="text-xs font-bold text-theme-title uppercase tracking-wider font-mono">Engineering Focus</h4>
+                    <ul class="space-y-2.5 text-xs text-theme-body">
+                        <li class="flex items-start gap-2"><span class="text-[#C62828] font-bold">■</span> Artificial Intelligence & Machine Learning Pipelines</li>
+                        <li class="flex items-start gap-2"><span class="text-[#C62828] font-bold">■</span> Scalable Web Architectures (Python / Flask)</li>
+                        <li class="flex items-start gap-2"><span class="text-[#C62828] font-bold">■</span> Algorithmic Problem Solving & Data Structures</li>
+                        <li class="flex items-start gap-2"><span class="text-[#C62828] font-bold">■</span> High-Performance Backend Systems & APIs</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- PROJECTS PORTFOLIO SECTION -->
+<section id="projects" class="py-10 sm:py-14 bg-theme-secondary border-b border-theme-subtle">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+            <div>
+                <div class="flex items-center gap-3 mb-1">
+                    <span class="section-num">02 //</span>
+                    <h2 class="text-xl sm:text-2xl font-extrabold text-theme-primary uppercase tracking-tight">Project Showcase</h2>
+                </div>
+                <p class="text-xs text-theme-secondary">Case studies of web applications, AI models, and software systems built from scratch.</p>
+            </div>
+
+            {% if projects and project_categories %}
+                <!-- Filter Category Buttons -->
+                <div class="flex flex-wrap gap-1.5">
+                    <button class="portfolio-filter-btn btn-theme-primary py-1 px-3 text-[11px] font-mono font-bold transition-all" data-filter="all">
+                        ALL ({{ projects_count }})
+                    </button>
+                    {% for cat in project_categories %}
+                        <button class="portfolio-filter-btn btn-theme-outline py-1 px-3 text-[11px] font-mono font-bold transition-all" data-filter="{{ cat }}">
+                            {{ cat.upper() }}
+                        </button>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        {% if projects %}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for project in projects %}
+                    <div class="project-item card-editorial p-5 flex flex-col justify-between" data-category="{{ project.category }}">
+                        <div>
+                            <!-- Number & Category Header -->
+                            <div class="flex items-center justify-between mb-3 pb-2 border-b border-theme-subtle">
+                                <span class="font-mono text-[11px] font-bold text-[#C62828]">PROJECT 0{{ loop.index }}</span>
+                                <span class="tag-subtle text-[10px]">{{ project.category }}</span>
+                            </div>
+
+                            <!-- Thumbnail Image -->
+                            <div class="project-img-frame">
+                                <img src="{{ project.image_url }}" alt="{{ project.title }}" loading="lazy">
+                            </div>
+
+                            <!-- Title & Short Description -->
+                            <h3 class="text-lg font-bold text-theme-title mb-1.5 font-sans hover:text-[#C62828] transition-colors">
+                                <a href="{{ url_for('main.project_detail', slug=project.slug) }}" class="text-decoration-none text-theme-title hover:text-[#C62828]">{{ project.title }}</a>
+                            </h3>
+                            
+                            <p class="text-xs text-theme-muted mb-3 leading-relaxed line-clamp-2">
+                                {{ project.short_description }}
+                            </p>
+
+                            <!-- Tech Stack Tags -->
+                            <div class="flex flex-wrap gap-1 mb-4">
+                                {% for tag in project.tags.split(',') %}
+                                    <span class="tag-subtle text-[9px] py-0.5 px-1.5">{{ tag.strip() }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- Card Action -->
+                        <div class="pt-3 border-t border-theme-subtle flex items-center justify-between text-xs">
+                            <a href="{{ url_for('main.project_detail', slug=project.slug) }}" class="font-mono font-bold text-[#C62828] hover:underline inline-flex items-center gap-1 text-decoration-none">
+                                View Case Study ↗
+                            </a>
+
+                            <div class="flex items-center gap-2.5 text-theme-muted">
+                                {% if project.github_url and project.github_url != '#' %}
+                                    <a href="{{ project.github_url }}" target="_blank" class="hover:text-[#C62828] text-decoration-none" title="GitHub Repository"><i class="fab fa-github"></i></a>
+                                {% endif %}
+                                {% if project.demo_url and project.demo_url != '#' %}
+                                    <a href="{{ project.demo_url }}" target="_blank" class="hover:text-[#C62828] text-decoration-none" title="Live Demo"><i class="fas fa-external-link-alt"></i></a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="card-editorial p-8 text-center max-w-md mx-auto space-y-2">
+                <i class="fas fa-folder-open text-2xl text-[#C62828]"></i>
+                <h4 class="text-base font-bold text-theme-title">No Projects Uploaded Yet</h4>
+                <p class="text-xs text-theme-muted">Projects uploaded from the admin panel will appear here automatically.</p>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- RESEARCH & PUBLICATIONS SECTION -->
+{% if research_papers %}
+<section id="research" class="py-10 sm:py-14 bg-theme-primary border-b border-theme-subtle">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="flex items-center gap-3 mb-8">
+            <span class="section-num">03 //</span>
+            <h2 class="text-xl sm:text-2xl font-extrabold text-theme-primary uppercase tracking-tight">Research & Publications</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {% for paper in research_papers %}
+                <div class="card-editorial p-6 flex flex-col justify-between work-card-accent">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between text-xs font-mono">
+                            <span class="tag-accent text-[10px]">{{ paper.conference_or_journal }}</span>
+                            <span class="font-bold text-theme-title text-[11px]">{{ paper.publication_year }}</span>
+                        </div>
+
+                        <h3 class="text-lg font-bold text-theme-title leading-snug">
+                            <a href="{{ url_for('main.research_detail', research_id=paper.id) }}" class="text-theme-title hover:text-[#C62828] transition-colors text-decoration-none">
+                                {{ paper.title }}
+                            </a>
+                        </h3>
+
+                        <p class="text-xs text-theme-muted leading-relaxed line-clamp-3">
+                            {{ paper.abstract }}
+                        </p>
+
+                        <div class="flex flex-wrap gap-1 pt-1">
+                            {% for tag in paper.tags.split(',') %}
+                                <span class="tag-subtle text-[9px] py-0.5 px-1.5">{{ tag.strip() }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="pt-4 border-t border-theme-subtle mt-4 flex flex-wrap items-center justify-between gap-3 text-xs font-mono font-bold">
+                        <a href="{{ url_for('main.research_detail', research_id=paper.id) }}" class="text-[#C62828] hover:underline inline-flex items-center gap-1 text-decoration-none">
+                            READ FULL RESEARCH <i class="fas fa-arrow-right text-[10px] ms-1"></i>
+                        </a>
+
+                        <div class="flex items-center gap-2.5 text-[11px]">
+                            {% if paper.paper_url and paper.paper_url != '#' %}
+                                <a href="{{ paper.paper_url }}" target="_blank" class="text-theme-muted hover:text-[#C62828] text-decoration-none">
+                                    Paper / DOI ↗
+                                </a>
+                            {% endif %}
+                            {% if paper.pdf_url and paper.pdf_url != '#' %}
+                                <a href="{{ paper.pdf_url }}" target="_blank" class="text-theme-muted hover:text-[#C62828] text-decoration-none">
+                                    PDF ↗
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- DYNAMIC SKILLS SECTION -->
+<section id="skills" class="py-10 sm:py-14 bg-theme-secondary border-b border-theme-subtle">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="flex items-center gap-3 mb-8">
+            <span class="section-num">04 //</span>
+            <h2 class="text-xl sm:text-2xl font-extrabold text-theme-primary uppercase tracking-tight">Technical Skills & Expertise</h2>
+        </div>
+
+        {% if skills_by_category %}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {% for category_name, category_skills in skills_by_category.items() %}
+                    <div class="card-editorial p-5 sm:p-6">
+                        <h3 class="text-base font-bold text-theme-title uppercase tracking-wider mb-4 border-b border-theme-subtle pb-2 flex items-center gap-2 font-mono">
+                            <span class="w-2 h-2 bg-[#C62828]"></span>
+                            {{ category_name }}
+                        </h3>
+
+                        <div class="space-y-4">
+                            {% for skill in category_skills %}
+                                <div>
+                                    <div class="flex justify-between items-center mb-1 text-xs font-semibold text-theme-title">
+                                        <span class="flex items-center gap-1.5">
+                                            <i class="{{ skill.icon_class }} text-[#C62828] text-[11px]"></i> {{ skill.name }}
+                                        </span>
+                                        <span class="font-mono text-[11px] text-[#C62828] font-bold">{{ skill.proficiency }}%</span>
+                                    </div>
+                                    
+                                    <!-- Animated Progress Bar -->
+                                    <div class="skill-progress-bar">
+                                        <div class="skill-progress-fill" data-progress="{{ skill.proficiency }}%"></div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-theme-secondary text-center py-6 text-sm">No skills configured yet.</p>
+        {% endif %}
+    </div>
+</section>
+
+<!-- EXPERIENCE & EDUCATION SECTION (Clean Cards without bulky timeline dots) -->
+<section id="experience" class="py-10 sm:py-14 bg-theme-primary border-b border-theme-subtle">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="flex items-center gap-3 mb-8">
+            <span class="section-num">05 //</span>
+            <h2 class="text-xl sm:text-2xl font-extrabold text-theme-primary uppercase tracking-tight">Experience & Education</h2>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Work Experience -->
+            <div>
+                <h3 class="text-base font-bold text-theme-primary mb-4 uppercase tracking-wider font-mono flex items-center gap-2">
+                    <i class="fas fa-briefcase text-[#C62828]"></i> Work History
+                </h3>
+
+                <div class="space-y-4">
+                    {% for item in work_experience %}
+                        <div class="card-editorial p-5 work-card-accent">
+                            <div class="flex flex-wrap items-center justify-between gap-2 mb-1.5">
+                                <h4 class="text-sm font-bold text-theme-title">{{ item.title_or_degree }}</h4>
+                                <span class="tag-accent text-[10px]">{{ item.period }}</span>
+                            </div>
+                            <div class="text-[11px] font-semibold text-theme-muted mb-2 flex items-center gap-1.5">
+                                <i class="fas fa-building text-[#C62828] text-[10px]"></i> {{ item.organization }} <span class="opacity-40">•</span> {{ item.location }}
+                            </div>
+                            <p class="text-xs text-theme-body leading-relaxed">{{ item.description }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Education -->
+            <div>
+                <h3 class="text-base font-bold text-theme-primary mb-4 uppercase tracking-wider font-mono flex items-center gap-2">
+                    <i class="fas fa-graduation-cap text-[#C62828]"></i> Academic Qualifications
+                </h3>
+
+                <div class="space-y-4">
+                    {% for item in education_experience %}
+                        <div class="card-editorial p-5 edu-card-accent">
+                            <div class="flex flex-wrap items-center justify-between gap-2 mb-1.5">
+                                <h4 class="text-sm font-bold text-theme-title">{{ item.title_or_degree }}</h4>
+                                <span class="tag-accent text-[10px]">{{ item.period }}</span>
+                            </div>
+                            <div class="text-[11px] font-semibold text-theme-muted mb-2 flex items-center gap-1.5">
+                                <i class="fas fa-university text-[#C62828] text-[10px]"></i> {{ item.organization }} <span class="opacity-40">•</span> {{ item.location }}
+                            </div>
+                            <p class="text-xs text-theme-body leading-relaxed">{{ item.description }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CONTACT SECTION -->
+<section id="contact" class="py-10 sm:py-14 bg-theme-secondary">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="flex items-center gap-3 mb-8">
+            <span class="section-num">06 //</span>
+            <h2 class="text-xl sm:text-2xl font-extrabold text-theme-primary uppercase tracking-tight">Contact & Inquiries</h2>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- Contact Details -->
+            <div class="lg:col-span-5 space-y-4">
+                <div class="card-editorial p-5">
+                    <div class="text-[11px] font-mono uppercase text-theme-muted mb-1">Email Address</div>
+                    <a href="mailto:{{ profile.email }}" class="text-sm font-bold text-theme-title hover:text-[#C62828] transition-colors text-decoration-none">{{ profile.email }}</a>
+                </div>
+
+                <div class="card-editorial p-5">
+                    <div class="text-[11px] font-mono uppercase text-theme-muted mb-1">Location</div>
+                    <div class="text-sm font-bold text-theme-title">{{ profile.location }}</div>
+                </div>
+
+                <div class="card-editorial p-5">
+                    <div class="text-[11px] font-mono uppercase text-theme-muted mb-1">Phone / WhatsApp</div>
+                    <div class="text-sm font-bold text-theme-title">{{ profile.phone }}</div>
+                </div>
+            </div>
+
+            <!-- Enhanced Contact Form -->
+            <div class="lg:col-span-7">
+                <div class="form-card-pro p-6 sm:p-8">
+                    <div id="contact-status"></div>
+
+                    <form id="contact-form" action="{{ url_for('main.contact') }}" method="POST" class="space-y-4">
+                        <!-- Anti-Spam Honeypot Field -->
+                        <div style="display: none !important; opacity: 0; position: absolute; left: -9999px;">
+                            <label for="website_hp">Leave this field blank</label>
+                            <input type="text" id="website_hp" name="website_hp" tabindex="-1" autocomplete="off">
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label for="name" class="form-label-pro">Your Name *</label>
+                                <input type="text" id="name" name="name" required placeholder="John Doe" class="form-input-pro">
+                            </div>
+
+                            <div>
+                                <label for="email" class="form-label-pro">Your Email *</label>
+                                <input type="email" id="email" name="email" required placeholder="john@example.com" class="form-input-pro">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="subject" class="form-label-pro">Subject</label>
+                            <input type="text" id="subject" name="subject" placeholder="Project Inquiry / Research Collaboration" class="form-input-pro">
+                        </div>
+
+                        <div>
+                            <label for="message" class="form-label-pro">Message *</label>
+                            <textarea id="message" name="message" rows="4" required placeholder="Write your message here..." class="form-input-pro"></textarea>
+                        </div>
+
+                        <button type="submit" class="btn-theme-primary w-full justify-center py-3.5 text-xs font-bold uppercase tracking-wider">
+                            <i class="fas fa-paper-plane me-1.5"></i> Send Message Now
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

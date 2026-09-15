@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}{{ paper.title }} | Research Paper{% endblock %}
+
+{% block content %}
+<div class="py-8 sm:py-12 bg-theme-primary">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Breadcrumb / Back Navigation -->
+        <div class="mb-5">
+            <a href="{{ url_for('main.index') }}#research" class="inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-theme-muted hover:text-theme-primary transition-colors text-decoration-none">
+                <i class="fas fa-arrow-left text-xs"></i> Back to All Research
+            </a>
+        </div>
+
+        <!-- Research Paper Header Card -->
+        <article class="card-editorial p-5 sm:p-8 mb-8 shadow-2xl rounded-xl">
+            <div class="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-theme-subtle mb-8">
+                <div class="flex items-center gap-3">
+                    <span class="tag-accent">{{ paper.publication_year }}</span>
+                    <span class="font-mono text-xs font-bold uppercase text-theme-muted">{{ paper.conference_or_journal }}</span>
+                </div>
+                
+                {% if paper.pdf_url and paper.pdf_url != '#' %}
+                <a href="{{ paper.pdf_url }}" target="_blank" class="btn-theme-primary text-xs py-2 px-4 inline-flex items-center gap-2 text-decoration-none">
+                    <i class="fas fa-file-pdf"></i> Download Full PDF ↗
+                </a>
+                {% endif %}
+            </div>
+
+            <h1 class="text-2xl sm:text-4xl font-extrabold text-theme-title tracking-tight leading-tight mb-6">
+                {{ paper.title }}
+            </h1>
+
+            <!-- Tags -->
+            {% if paper.tags %}
+            <div class="flex flex-wrap gap-2 mb-8">
+                {% for tag in paper.tags.split(',') %}
+                    <span class="tag-subtle">{{ tag.strip() }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Abstract & Detailed Introduction -->
+            <div class="space-y-6 text-theme-body text-base sm:text-lg leading-relaxed pt-4 border-t border-theme-subtle">
+                <h3 class="text-sm font-mono font-bold uppercase tracking-wider text-theme-accent">Research Abstract & Overview</h3>
+                <p class="whitespace-pre-line text-theme-body">
+                    {{ paper.abstract }}
+                </p>
+            </div>
+
+            <!-- Paper Actions -->
+            <div class="mt-10 pt-6 border-t border-theme-subtle flex flex-wrap items-center justify-between gap-4">
+                {% if paper.paper_url and paper.paper_url != '#' %}
+                <a href="{{ paper.paper_url }}" target="_blank" class="btn-theme-outline text-xs py-2.5 px-5">
+                    Publisher Page / Repository ↗
+                </a>
+                {% endif %}
+                
+                <a href="{{ url_for('main.index') }}#contact" class="btn-theme-primary text-xs py-2.5 px-5">
+                    Discuss Research / Collaboration <i class="fas fa-arrow-right ms-1 text-xs"></i>
+                </a>
+            </div>
+        </article>
+
+        <!-- Related Research Papers -->
+        {% if related_papers %}
+        <div class="mt-16 pt-12 border-t border-theme-subtle">
+            <h3 class="text-xl font-extrabold uppercase tracking-tight text-theme-title mb-8 font-sans flex items-center gap-3">
+                <span class="text-theme-accent font-mono">■</span> Related Research Works
+            </h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for r in related_papers %}
+                <div class="card-editorial p-6 flex flex-col justify-between h-full">
+                    <div>
+                        <div class="flex items-center justify-between text-xs font-mono mb-3">
+                            <span class="text-theme-accent font-bold">{{ r.publication_year }}</span>
+                            <span class="text-theme-muted truncate max-w-[150px]">{{ r.conference_or_journal }}</span>
+                        </div>
+                        <h4 class="text-base font-bold text-theme-title line-clamp-2 mb-3">
+                            <a href="{{ url_for('main.research_detail', research_id=r.id) }}" class="text-theme-title hover:text-theme-accent transition-colors text-decoration-none">
+                                {{ r.title }}
+                            </a>
+                        </h4>
+                        <p class="text-xs text-theme-muted line-clamp-3 leading-relaxed mb-4">
+                            {{ r.abstract }}
+                        </p>
+                    </div>
+
+                    <a href="{{ url_for('main.research_detail', research_id=r.id) }}" class="text-xs font-mono font-bold text-theme-accent hover:underline inline-flex items-center gap-1 mt-2 text-decoration-none">
+                        READ RESEARCH <i class="fas fa-arrow-right text-[10px]"></i>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}

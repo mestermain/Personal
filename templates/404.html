@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}404 Page Not Found | Personal Portfolio{% endblock %}
+
+{% block content %}
+<section class="min-h-[70vh] flex items-center justify-center py-20 bg-theme-primary text-[#8E1B1B]">
+    <div class="max-w-2xl mx-auto px-4 text-center space-y-6">
+        <div class="font-mono text-6xl sm:text-8xl font-extrabold text-[#C62828] tracking-widest">
+            404
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-[#8E1B1B] uppercase tracking-tight font-sans">
+            Page Not Found
+        </h1>
+        <p class="text-base sm:text-lg text-[#5C1010]/80 max-w-lg mx-auto leading-relaxed font-normal">
+            The requested page or resource could not be found. It may have been moved, renamed, or deleted.
+        </p>
+        <div class="pt-4 flex flex-wrap items-center justify-center gap-4">
+            <a href="{{ url_for('main.index') }}" class="btn-theme-primary">
+                <i class="fas fa-home me-1"></i> Return Home
+            </a>
+            <a href="{{ url_for('main.index') }}#contact" class="btn-theme-outline">
+                <i class="fas fa-envelope me-1"></i> Contact Admin
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

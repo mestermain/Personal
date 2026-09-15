@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}500 Internal Server Error | Personal Portfolio{% endblock %}
+
+{% block content %}
+<section class="min-h-[70vh] flex items-center justify-center py-20 bg-theme-primary text-[#8E1B1B]">
+    <div class="max-w-2xl mx-auto px-4 text-center space-y-6">
+        <div class="font-mono text-6xl sm:text-8xl font-extrabold text-[#C62828] tracking-widest">
+            500
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-[#8E1B1B] uppercase tracking-tight font-sans">
+            Internal Server Error
+        </h1>
+        <p class="text-base sm:text-lg text-[#5C1010]/80 max-w-lg mx-auto leading-relaxed font-normal">
+            Something went wrong on our server. The error has been logged securely and we are working to resolve it.
+        </p>
+        <div class="pt-4 flex flex-wrap items-center justify-center gap-4">
+            <a href="{{ url_for('main.index') }}" class="btn-theme-primary">
+                <i class="fas fa-home me-1"></i> Return Home
+            </a>
+            <a href="{{ url_for('main.index') }}#contact" class="btn-theme-outline">
+                <i class="fas fa-envelope me-1"></i> Report Issue
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

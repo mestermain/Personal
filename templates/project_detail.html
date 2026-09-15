@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}{{ project.title }} | Technical Case Study{% endblock %}
+
+{% block content %}
+<section class="py-16 bg-white border-b border-[#E5E5E5]">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Back Navigation -->
+        <div class="mb-8">
+            <a href="{{ url_for('main.index') }}#projects" class="inline-flex items-center gap-2 text-xs font-mono font-bold text-[#111111] hover:text-[#C62828] transition-colors">
+                <i class="fas fa-arrow-left"></i> ← BACK TO PROJECTS PORTFOLIO
+            </a>
+        </div>
+
+        <div class="card-editorial p-8 sm:p-12 space-y-8">
+            <!-- Header Info -->
+            <div class="space-y-4 border-b border-[#E5E5E5] pb-8">
+                <div class="flex flex-wrap items-center gap-3">
+                    <span class="tag-red font-mono">{{ project.category }}</span>
+                    {% if project.is_featured %}
+                        <span class="tag-pill font-mono bg-[#FFF8E1] text-[#B78103] border-[#FFE082]">
+                            FEATURED CASE STUDY
+                        </span>
+                    {% endif %}
+                </div>
+
+                <h1 class="text-3xl sm:text-5xl font-extrabold text-[#111111] leading-tight font-sans">
+                    {{ project.title }}
+                </h1>
+
+                <p class="text-lg text-[#666666] font-normal leading-relaxed">
+                    {{ project.short_description }}
+                </p>
+
+                <!-- Actions -->
+                <div class="flex flex-wrap items-center gap-4 pt-2">
+                    {% if project.demo_url and project.demo_url != '#' %}
+                        <a href="{{ project.demo_url }}" target="_blank" class="btn-red">
+                            <i class="fas fa-external-link-alt"></i> Live Demo Preview ↗
+                        </a>
+                    {% endif %}
+                    
+                    {% if project.github_url and project.github_url != '#' %}
+                        <a href="{{ project.github_url }}" target="_blank" class="btn-outline-dark">
+                            <i class="fab fa-github text-base"></i> GitHub Source Code ↗
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Banner Image -->
+            <div class="project-img-frame max-h-[480px]">
+                <img src="{{ project.image_url }}" alt="{{ project.title }}" class="w-full h-full object-cover">
+            </div>
+
+            <!-- Content & Tech Stack Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 pt-4">
+                <div class="lg:col-span-8 space-y-4">
+                    <h3 class="text-lg font-bold text-[#111111] font-mono uppercase tracking-wider">Overview & Architecture</h3>
+                    <div class="text-[#444444] leading-relaxed space-y-4 whitespace-pre-line text-base">
+                        {{ project.detailed_description if project.detailed_description else project.short_description }}
+                    </div>
+                </div>
+
+                <div class="lg:col-span-4 space-y-6">
+                    <div class="card-editorial p-6 border-l-4 border-l-[#C62828]">
+                        <h4 class="text-xs font-mono font-bold uppercase tracking-wider text-[#111111] mb-3">Technologies & Tools</h4>
+                        <div class="flex flex-wrap gap-1.5">
+                            {% for tag in project.tags.split(',') %}
+                                <span class="tag-pill">{{ tag.strip() }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Related Projects -->
+        {% if related_projects %}
+        <div class="mt-16 space-y-6">
+            <h3 class="text-xl font-bold text-[#111111] font-mono uppercase tracking-wider">Related Case Studies</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {% for item in related_projects %}
+                    <a href="{{ url_for('main.project_detail', slug=item.slug) }}" class="card-editorial p-4 block text-decoration-none">
+                        <img src="{{ item.image_url }}" alt="{{ item.title }}" class="w-full h-36 object-cover rounded mb-3">
+                        <h5 class="font-bold text-[#111111] text-base truncate">{{ item.title }}</h5>
+                        <p class="text-xs text-[#666666] line-clamp-2 mt-1">{{ item.short_description }}</p>
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+</section>
+{% endblock %}

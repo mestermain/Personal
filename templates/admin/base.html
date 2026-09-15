@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin Control Panel{% endblock %} | Personal Portfolio</title>
+
+    <!-- Google Fonts: Plus Jakarta Sans & Space Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Mono:ital,wght@0,400;0,700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- FontAwesome 6 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Custom Style -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='images/favicon.png') }}">
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-theme-primary text-theme-primary font-sans min-h-screen flex flex-col justify-between selection:bg-[#FFFFFF] selection:text-[#8E1B1B]">
+
+    <!-- Top Mobile Navigation Bar (< 992px) -->
+    <header class="lg:hidden fixed top-0 left-0 right-0 h-[60px] bg-theme-secondary text-theme-primary z-50 px-4 flex items-center justify-between border-b border-theme-subtle shadow-md">
+        <div class="flex items-center gap-3">
+            <button id="admin-sidebar-toggle" type="button" class="p-2 rounded text-theme-primary hover:bg-current/10 focus:outline-none focus:ring-2 focus:ring-current min-w-[40px] min-h-[40px] flex items-center justify-center" aria-label="Toggle admin sidebar">
+                <i class="fas fa-bars text-base"></i>
+            </button>
+            <a href="{{ url_for('admin.dashboard') }}" class="flex items-center gap-2 font-extrabold text-theme-primary text-sm uppercase tracking-wider text-decoration-none">
+                <img id="site-logo-mobile" src="{{ url_for('static', filename='images/logo-red.png') }}" alt="Logo" class="h-8 w-auto object-contain">
+                <span>Admin Panel</span>
+            </a>
+        </div>
+        <div class="flex items-center gap-2">
+            <a href="{{ url_for('main.index') }}" target="_blank" class="text-xs text-theme-primary hover:underline font-mono flex items-center gap-1 text-decoration-none">
+                Live Site ↗
+            </a>
+        </div>
+    </header>
+
+    <div class="admin-wrapper">
+        <!-- Sidebar Navigation -->
+        <aside class="admin-sidebar py-6 flex flex-col justify-between border-r border-theme-subtle bg-theme-secondary">
+            <div>
+                <!-- Brand Title -->
+                <div class="px-6 pb-6 mb-4 border-b border-theme-subtle flex items-center justify-between">
+                    <a href="{{ url_for('admin.dashboard') }}" class="flex items-center gap-3 text-theme-primary text-decoration-none">
+                        <img id="site-logo" src="{{ url_for('static', filename='images/logo-red.png') }}" alt="Logo" class="h-9 w-auto object-contain">
+                        <div>
+                            <div class="font-extrabold text-theme-primary text-sm uppercase tracking-wider">Admin Panel</div>
+                            <div class="text-[11px] text-theme-muted font-mono">Portfolio Control</div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Nav Menu Links -->
+                <nav class="space-y-1 px-3">
+                    <a href="{{ url_for('admin.dashboard') }}" class="admin-nav-link rounded-lg {{ 'active' if request.endpoint == 'admin.dashboard' }}">
+                        <i class="fas fa-chart-pie w-5"></i> Dashboard
+                    </a>
+                    
+                    <a href="{{ url_for('admin.profile') }}" class="admin-nav-link rounded-lg {{ 'active' if request.endpoint == 'admin.profile' }}">
+                        <i class="fas fa-id-card w-5"></i> Profile & Bio
+                    </a>
+                    
+                    <a href="{{ url_for('admin.skills') }}" class="admin-nav-link rounded-lg {{ 'active' if request.endpoint == 'admin.skills' }}">
+                        <i class="fas fa-laptop-code w-5"></i> Manage Skills
+                    </a>
+
+                    <a href="{{ url_for('admin.projects') }}" class="admin-nav-link rounded-lg {{ 'active' if 'admin.project' in request.endpoint }}">
+                        <i class="fas fa-folder-open w-5"></i> Project Portfolio
+                    </a>
+
+                    <a href="{{ url_for('admin.research') }}" class="admin-nav-link rounded-lg {{ 'active' if 'admin.research' in request.endpoint }}">
+                        <i class="fas fa-book-open w-5"></i> Research Papers
+                    </a>
+
+                    <a href="{{ url_for('admin.experience') }}" class="admin-nav-link rounded-lg {{ 'active' if request.endpoint == 'admin.experience' }}">
+                        <i class="fas fa-briefcase w-5"></i> Experience & Education
+                    </a>
+
+                    <a href="{{ url_for('admin.messages') }}" class="admin-nav-link rounded-lg {{ 'active' if 'admin.message' in request.endpoint }}">
+                        <i class="fas fa-envelope w-5"></i> Messages Inbox
+                    </a>
+
+                    <a href="{{ url_for('admin.settings') }}" class="admin-nav-link rounded-lg {{ 'active' if request.endpoint == 'admin.settings' }}">
+                        <i class="fas fa-gear w-5"></i> Settings & Security
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Sidebar Bottom Actions -->
+            <div class="px-4 pt-4 border-t border-theme-subtle space-y-3">
+                <a href="{{ url_for('main.index') }}" target="_blank" class="w-full py-2 px-3 rounded-lg btn-theme-outline text-xs font-mono font-bold flex items-center justify-center gap-2 text-decoration-none">
+                    <i class="fas fa-external-link-alt text-[10px]"></i> View Live Site ↗
+                </a>
+
+                <div class="flex items-center justify-between px-1 pt-1 text-xs">
+                    <div class="flex items-center gap-2 font-bold text-theme-primary">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                        <span>{{ current_user.username }}</span>
+                    </div>
+                    <a href="{{ url_for('auth.logout') }}" class="text-theme-primary hover:underline font-bold text-decoration-none">
+                        Logout <i class="fas fa-right-from-bracket ms-1 text-[10px]"></i>
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="admin-content bg-theme-primary text-theme-primary">
+            <!-- Flash Message Banner -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-dismissible fade show {{ 'bg-emerald-50 text-emerald-900 border-emerald-300' if category == 'success' else ('bg-rose-50 text-rose-900 border-rose-300' if category == 'danger' else 'bg-amber-50 text-amber-900 border-amber-300') }} border rounded-lg shadow-lg p-3.5 mb-6 flex items-center justify-between" role="alert">
+                            <div class="flex items-center gap-3">
+                                {% if category == 'success' %}
+                                    <i class="fas fa-check-circle text-emerald-600 text-base"></i>
+                                {% elif category == 'danger' %}
+                                    <i class="fas fa-exclamation-circle text-rose-600 text-base"></i>
+                                {% else %}
+                                    <i class="fas fa-info-circle text-amber-600 text-base"></i>
+                                {% endif %}
+                                <span class="text-xs font-bold">{{ message }}</span>
+                            </div>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

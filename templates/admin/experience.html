@@ -1,0 +1,191 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Manage Experience & Education{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-theme-subtle pb-4">
+        <div>
+            <h1 class="text-xl sm:text-2xl font-extrabold text-theme-primary uppercase tracking-tight font-sans">Experience & Education</h1>
+            <p class="text-theme-muted text-xs font-mono mt-1">Manage employment history, research experience, and academic qualifications.</p>
+        </div>
+
+        <button type="button" class="btn-theme-primary text-xs py-2 px-4" data-bs-toggle="modal" data-bs-target="#addExperienceModal">
+            <i class="fas fa-plus me-1"></i> Add Record
+        </button>
+    </div>
+
+    <!-- Timeline List Card -->
+    <div class="card-editorial p-5 sm:p-6">
+        {% if items %}
+            <div class="table-responsive">
+                <table class="table align-middle mb-0 text-xs table-responsive-cards">
+                    <thead>
+                        <tr class="text-theme-muted font-mono uppercase border-b border-theme-subtle">
+                            <th>Type</th>
+                            <th>Title / Position</th>
+                            <th>Organization</th>
+                            <th>Period</th>
+                            <th>Order</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in items %}
+                            <tr class="border-b border-theme-subtle">
+                                <td data-label="Type">
+                                    {% if item.type == 'work' %}
+                                        <span class="tag-red text-[10px]"><i class="fas fa-briefcase me-1"></i> Work</span>
+                                    {% else %}
+                                        <span class="tag-pill text-[10px]"><i class="fas fa-graduation-cap me-1"></i> Education</span>
+                                    {% endif %}
+                                </td>
+                                <td data-label="Title">
+                                    <div class="font-bold text-theme-title text-sm">{{ item.title_or_degree }}</div>
+                                    <div class="text-xs text-theme-muted truncate max-w-xs">{{ item.description }}</div>
+                                </td>
+                                <td data-label="Organization" class="text-theme-title font-semibold text-xs">{{ item.organization }}</td>
+                                <td data-label="Period">
+                                    <span class="tag-pill text-[10px]">{{ item.period }}</span>
+                                </td>
+                                <td data-label="Order" class="text-theme-muted font-mono text-xs">{{ item.order_index }}</td>
+                                <td data-label="Actions" class="text-end">
+                                    <div class="flex items-center justify-end gap-2">
+                                        <button type="button" class="btn-theme-outline py-1 px-3 text-xs" data-bs-toggle="modal" data-bs-target="#editExperienceModal{{ item.id }}">
+                                            <i class="fas fa-edit me-1"></i> Edit
+                                        </button>
+                                        
+                                        <form action="{{ url_for('admin.delete_experience', id=item.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this record?');">
+                                            <button type="submit" class="btn-theme-primary py-1 px-3 text-xs">
+                                                <i class="fas fa-trash me-1"></i> Delete
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <!-- Edit Modal -->
+                            <div class="modal fade" id="editExperienceModal{{ item.id }}" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content form-card-pro border-0">
+                                        <div class="modal-header border-b border-theme-subtle p-4">
+                                            <h5 class="modal-title text-sm font-extrabold text-[#8E1B1B] uppercase font-sans">Edit Record: {{ item.title_or_degree }}</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <form action="{{ url_for('admin.edit_experience', id=item.id) }}" method="POST">
+                                            <div class="modal-body p-5 space-y-4 text-start">
+                                                <div>
+                                                    <label class="form-label-pro">Entry Type</label>
+                                                    <select name="type" class="form-input-pro">
+                                                        <option value="work" {{ 'selected' if item.type == 'work' }}>Work Experience</option>
+                                                        <option value="education" {{ 'selected' if item.type == 'education' }}>Education & Degree</option>
+                                                    </select>
+                                                </div>
+
+                                                <div>
+                                                    <label class="form-label-pro">Title / Position / Degree *</label>
+                                                    <input type="text" name="title_or_degree" value="{{ item.title_or_degree }}" required class="form-input-pro">
+                                                </div>
+
+                                                <div>
+                                                    <label class="form-label-pro">Company / Institution *</label>
+                                                    <input type="text" name="organization" value="{{ item.organization }}" required class="form-input-pro">
+                                                </div>
+
+                                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                    <div>
+                                                        <label class="form-label-pro">Period (e.g. 2022 - Present)</label>
+                                                        <input type="text" name="period" value="{{ item.period }}" class="form-input-pro">
+                                                    </div>
+                                                    <div>
+                                                        <label class="form-label-pro">Location</label>
+                                                        <input type="text" name="location" value="{{ item.location }}" class="form-input-pro">
+                                                    </div>
+                                                </div>
+
+                                                <div>
+                                                    <label class="form-label-pro">Description</label>
+                                                    <textarea name="description" rows="3" class="form-input-pro">{{ item.description }}</textarea>
+                                                </div>
+
+                                                <div>
+                                                    <label class="form-label-pro">Order</label>
+                                                    <input type="number" name="order_index" value="{{ item.order_index }}" class="form-input-pro">
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer border-t border-theme-subtle p-3">
+                                                <button type="button" class="btn-theme-outline text-xs py-1.5 px-3" data-bs-dismiss="modal">Cancel</button>
+                                                <button type="submit" class="btn-theme-primary text-xs py-1.5 px-4">Save Changes</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-theme-muted text-xs font-mono py-6 text-center">No experience or education records added yet.</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Add Experience Modal -->
+<div class="modal fade" id="addExperienceModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content form-card-pro border-0">
+            <div class="modal-header border-b border-theme-subtle p-4">
+                <h5 class="modal-title text-sm font-extrabold text-[#8E1B1B] uppercase font-sans">Add Experience / Education Record</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ url_for('admin.add_experience') }}" method="POST">
+                <div class="modal-body p-5 space-y-4 text-start">
+                    <div>
+                        <label class="form-label-pro">Entry Type</label>
+                        <select name="type" class="form-input-pro">
+                            <option value="work" selected>Work Experience</option>
+                            <option value="education">Education & Degree</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="form-label-pro">Title / Position / Degree *</label>
+                        <input type="text" name="title_or_degree" required placeholder="e.g. Machine Learning Researcher" class="form-input-pro">
+                    </div>
+
+                    <div>
+                        <label class="form-label-pro">Company / Institution *</label>
+                        <input type="text" name="organization" required placeholder="e.g. Tech University / AI Lab" class="form-input-pro">
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="form-label-pro">Period (e.g. 2023 - Present)</label>
+                            <input type="text" name="period" value="2023 - Present" class="form-input-pro">
+                        </div>
+                        <div>
+                            <label class="form-label-pro">Location</label>
+                            <input type="text" name="location" value="San Francisco, CA" class="form-input-pro">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="form-label-pro">Description</label>
+                        <textarea name="description" rows="3" placeholder="Brief summary of responsibilities..." class="form-input-pro"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="form-label-pro">Order</label>
+                        <input type="number" name="order_index" value="0" class="form-input-pro">
+                    </div>
+                </div>
+                <div class="modal-footer border-t border-theme-subtle p-3">
+                    <button type="button" class="btn-theme-outline text-xs py-1.5 px-3" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-theme-primary text-xs py-1.5 px-4">Add Record</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

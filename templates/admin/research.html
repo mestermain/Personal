@@ -1,0 +1,217 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Manage Research & Publications{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-theme-subtle pb-4">
+        <div>
+            <h1 class="text-xl sm:text-2xl font-extrabold text-theme-primary uppercase tracking-tight font-sans">Research & Publications</h1>
+            <p class="text-theme-muted text-xs font-mono mt-1">Manage academic research papers, conference publications, and preprints.</p>
+        </div>
+
+        <button type="button" class="btn-theme-primary text-xs py-2 px-4" data-bs-toggle="modal" data-bs-target="#addResearchModal">
+            <i class="fas fa-plus me-1"></i> Add Research Paper
+        </button>
+    </div>
+
+    <!-- Research List Card -->
+    <div class="card-editorial p-5 sm:p-6">
+        {% if research_papers %}
+            <div class="table-responsive">
+                <table class="table align-middle mb-0 text-xs table-responsive-cards">
+                    <thead>
+                        <tr class="text-theme-muted font-mono uppercase border-b border-theme-subtle">
+                            <th>Title</th>
+                            <th>Journal / Venue</th>
+                            <th>Year</th>
+                            <th>Featured</th>
+                            <th>Tags</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for paper in research_papers %}
+                            <tr class="border-b border-theme-subtle">
+                                <td data-label="Title">
+                                    <div class="font-bold text-theme-title text-sm">{{ paper.title }}</div>
+                                    <div class="text-xs text-theme-muted truncate max-w-xs">{{ paper.abstract }}</div>
+                                </td>
+                                <td data-label="Venue" class="text-theme-title font-semibold text-xs">{{ paper.conference_or_journal }}</td>
+                                <td data-label="Year">
+                                    <span class="tag-red text-[10px]">{{ paper.publication_year }}</span>
+                                </td>
+                                <td data-label="Featured">
+                                    {% if paper.is_featured %}
+                                        <span class="tag-red text-[10px]">FEATURED</span>
+                                    {% else %}
+                                        <span class="tag-pill text-[10px]">STANDARD</span>
+                                    {% endif %}
+                                </td>
+                                <td data-label="Tags">
+                                    <div class="flex flex-wrap gap-1 max-w-xs">
+                                        {% for tag in paper.tags.split(',') %}
+                                            <span class="tag-pill text-[9px]">{{ tag.strip() }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </td>
+                                <td data-label="Actions" class="text-end">
+                                    <div class="flex items-center justify-end gap-2">
+                                        <button type="button" class="btn-theme-outline py-1 px-3 text-xs" data-bs-toggle="modal" data-bs-target="#editResearchModal{{ paper.id }}">
+                                            <i class="fas fa-edit me-1"></i> Edit
+                                        </button>
+                                        
+                                        <form action="{{ url_for('admin.delete_research', id=paper.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete paper {{ paper.title }}?');">
+                                            <button type="submit" class="btn-theme-primary py-1 px-3 text-xs">
+                                                <i class="fas fa-trash me-1"></i> Delete
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <!-- Edit Research Modal -->
+                            <div class="modal fade" id="editResearchModal{{ paper.id }}" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered modal-lg">
+                                    <div class="modal-content form-card-pro border-0">
+                                        <div class="modal-header border-b border-theme-subtle p-4">
+                                            <h5 class="modal-title text-sm font-extrabold text-[#8E1B1B] uppercase font-sans">Edit Paper: {{ paper.title }}</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <form action="{{ url_for('admin.edit_research', id=paper.id) }}" method="POST">
+                                            <div class="modal-body p-5 space-y-4 text-start">
+                                                <div>
+                                                    <label class="form-label-pro">Paper Title *</label>
+                                                    <input type="text" name="title" value="{{ paper.title }}" required class="form-input-pro">
+                                                </div>
+
+                                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                    <div>
+                                                        <label class="form-label-pro">Journal / Venue *</label>
+                                                        <input type="text" name="conference_or_journal" value="{{ paper.conference_or_journal }}" required class="form-input-pro">
+                                                    </div>
+                                                    <div>
+                                                        <label class="form-label-pro">Publication Year</label>
+                                                        <input type="text" name="publication_year" value="{{ paper.publication_year }}" class="form-input-pro">
+                                                    </div>
+                                                </div>
+
+                                                <div>
+                                                    <label class="form-label-pro">Abstract Summary *</label>
+                                                    <textarea name="abstract" rows="4" required class="form-input-pro">{{ paper.abstract }}</textarea>
+                                                </div>
+
+                                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                    <div>
+                                                        <label class="form-label-pro">Paper URL / DOI</label>
+                                                        <input type="text" name="paper_url" value="{{ paper.paper_url }}" class="form-input-pro">
+                                                    </div>
+                                                    <div>
+                                                        <label class="form-label-pro">PDF Link URL</label>
+                                                        <input type="text" name="pdf_url" value="{{ paper.pdf_url }}" class="form-input-pro">
+                                                    </div>
+                                                </div>
+
+                                                <div>
+                                                    <label class="form-label-pro">Tags (Comma Separated)</label>
+                                                    <input type="text" name="tags" value="{{ paper.tags }}" class="form-input-pro">
+                                                </div>
+
+                                                <div class="flex items-center justify-between border-t border-theme-subtle pt-4">
+                                                    <label class="flex items-center gap-2 text-xs font-bold text-[#8E1B1B] cursor-pointer">
+                                                        <input type="checkbox" name="is_featured" value="1" {{ 'checked' if paper.is_featured }} class="rounded accent-[#8E1B1B]">
+                                                        <span>Feature on Homepage Highlight</span>
+                                                    </label>
+
+                                                    <div class="flex items-center gap-2">
+                                                        <label class="form-label-pro mb-0">Order:</label>
+                                                        <input type="number" name="order_index" value="{{ paper.order_index }}" class="w-20 form-input-pro text-center">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer border-t border-theme-subtle p-3">
+                                                <button type="button" class="btn-theme-outline text-xs py-1.5 px-3" data-bs-dismiss="modal">Cancel</button>
+                                                <button type="submit" class="btn-theme-primary text-xs py-1.5 px-4">Save Changes</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-theme-muted text-xs font-mono py-6 text-center">No research papers added yet.</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Add Research Paper Modal -->
+<div class="modal fade" id="addResearchModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content form-card-pro border-0">
+            <div class="modal-header border-b border-theme-subtle p-4">
+                <h5 class="modal-title text-sm font-extrabold text-[#8E1B1B] uppercase font-sans">Add Research Paper</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ url_for('admin.add_research') }}" method="POST">
+                <div class="modal-body p-5 space-y-4 text-start">
+                    <div>
+                        <label class="form-label-pro">Paper Title *</label>
+                        <input type="text" name="title" required placeholder="e.g. Deep Neural Network Quantization Architecture" class="form-input-pro">
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="form-label-pro">Journal / Venue *</label>
+                            <input type="text" name="conference_or_journal" required placeholder="e.g. IEEE / ArXiv / JMLR" class="form-input-pro">
+                        </div>
+                        <div>
+                            <label class="form-label-pro">Publication Year</label>
+                            <input type="text" name="publication_year" value="2026" class="form-input-pro">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="form-label-pro">Abstract Summary *</label>
+                        <textarea name="abstract" rows="4" required placeholder="Abstract overview of the research paper findings..." class="form-input-pro"></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="form-label-pro">Paper URL / DOI</label>
+                            <input type="text" name="paper_url" placeholder="https://arxiv.org/..." class="form-input-pro">
+                        </div>
+                        <div>
+                            <label class="form-label-pro">PDF Link URL</label>
+                            <input type="text" name="pdf_url" placeholder="https://arxiv.org/pdf/..." class="form-input-pro">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="form-label-pro">Tags (Comma Separated)</label>
+                        <input type="text" name="tags" value="Machine Learning, Deep Learning, AI" class="form-input-pro">
+                    </div>
+
+                    <div class="flex items-center justify-between border-t border-theme-subtle pt-4">
+                        <label class="flex items-center gap-2 text-xs font-bold text-[#8E1B1B] cursor-pointer">
+                            <input type="checkbox" name="is_featured" value="1" checked class="rounded accent-[#8E1B1B]">
+                            <span>Feature on Homepage Highlight</span>
+                        </label>
+
+                        <div class="flex items-center gap-2">
+                            <label class="form-label-pro mb-0">Order:</label>
+                            <input type="number" name="order_index" value="0" class="w-20 form-input-pro text-center">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-t border-theme-subtle p-3">
+                    <button type="button" class="btn-theme-outline text-xs py-1.5 px-3" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-theme-primary text-xs py-1.5 px-4">Add Paper</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

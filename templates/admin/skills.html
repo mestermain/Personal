@@ -1,0 +1,165 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Manage Skills{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-theme-subtle pb-4">
+        <div>
+            <h1 class="text-xl sm:text-2xl font-extrabold text-theme-primary uppercase tracking-tight font-sans">Skills & Technologies</h1>
+            <p class="text-theme-muted text-xs font-mono mt-1">Add, edit, or categorize technical skills (e.g., Machine Learning, Backend, Frontend, Data Science).</p>
+        </div>
+
+        <button type="button" class="btn-theme-primary text-xs py-2 px-4" data-bs-toggle="modal" data-bs-target="#addSkillModal">
+            <i class="fas fa-plus me-1"></i> Add New Skill
+        </button>
+    </div>
+
+    <!-- Skills Table Card -->
+    <div class="card-editorial p-5 sm:p-6">
+        {% if skills %}
+            <div class="table-responsive">
+                <table class="table align-middle mb-0 text-xs table-responsive-cards">
+                    <thead>
+                        <tr class="text-theme-muted font-mono uppercase border-b border-theme-subtle">
+                            <th>Icon</th>
+                            <th>Skill Name</th>
+                            <th>Category</th>
+                            <th>Proficiency</th>
+                            <th>Order</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for skill in skills %}
+                            <tr class="border-b border-theme-subtle">
+                                <td data-label="Icon">
+                                    <span class="w-8 h-8 rounded-lg bg-theme-primary border border-theme-subtle flex items-center justify-center text-[#C62828] text-sm">
+                                        <i class="{{ skill.icon_class }}"></i>
+                                    </span>
+                                </td>
+                                <td data-label="Skill" class="font-bold text-theme-title text-sm">{{ skill.name }}</td>
+                                <td data-label="Category">
+                                    <span class="tag-accent text-[10px]">{{ skill.category }}</span>
+                                </td>
+                                <td data-label="Proficiency" class="w-48">
+                                    <div class="flex items-center gap-3 w-full">
+                                        <div class="skill-progress-bar">
+                                            <div class="skill-progress-fill" style="width: {{ skill.proficiency }}%"></div>
+                                        </div>
+                                        <span class="text-xs font-mono font-bold text-[#C62828]">{{ skill.proficiency }}%</span>
+                                    </div>
+                                </td>
+                                <td data-label="Order" class="text-theme-muted font-mono text-xs">{{ skill.order_index }}</td>
+                                <td data-label="Actions" class="text-end">
+                                    <div class="flex items-center justify-end gap-2">
+                                        <button type="button" class="btn-theme-outline py-1 px-3 text-xs" data-bs-toggle="modal" data-bs-target="#editSkillModal{{ skill.id }}">
+                                            <i class="fas fa-edit me-1"></i> Edit
+                                        </button>
+                                        
+                                        <form action="{{ url_for('admin.delete_skill', id=skill.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete skill {{ skill.name }}?');">
+                                            <button type="submit" class="btn-theme-primary py-1 px-3 text-xs">
+                                                <i class="fas fa-trash me-1"></i> Delete
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <!-- Edit Skill Modal -->
+                            <div class="modal fade" id="editSkillModal{{ skill.id }}" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content form-card-pro border-0">
+                                        <div class="modal-header border-b border-theme-subtle p-4">
+                                            <h5 class="modal-title text-sm font-extrabold text-[#8E1B1B] uppercase font-sans">Edit Skill: {{ skill.name }}</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <form action="{{ url_for('admin.edit_skill', id=skill.id) }}" method="POST">
+                                            <div class="modal-body p-5 space-y-4">
+                                                <div>
+                                                    <label class="form-label-pro">Skill Name *</label>
+                                                    <input type="text" name="name" value="{{ skill.name }}" required class="form-input-pro">
+                                                </div>
+
+                                                <div>
+                                                    <label class="form-label-pro">Category *</label>
+                                                    <input type="text" name="category" value="{{ skill.category }}" required placeholder="e.g., Programming, Machine Learning" class="form-input-pro">
+                                                </div>
+
+                                                <div>
+                                                    <label class="form-label-pro">Proficiency Percentage (0-100)</label>
+                                                    <input type="number" name="proficiency" value="{{ skill.proficiency }}" min="0" max="100" class="form-input-pro">
+                                                </div>
+
+                                                <div>
+                                                    <label class="form-label-pro">FontAwesome Icon Class</label>
+                                                    <input type="text" name="icon_class" value="{{ skill.icon_class }}" placeholder="fas fa-code" class="form-input-pro">
+                                                </div>
+
+                                                <div>
+                                                    <label class="form-label-pro">Display Order</label>
+                                                    <input type="number" name="order_index" value="{{ skill.order_index }}" class="form-input-pro">
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer border-t border-theme-subtle p-3">
+                                                <button type="button" class="btn-theme-outline text-xs py-1.5 px-3" data-bs-dismiss="modal">Cancel</button>
+                                                <button type="submit" class="btn-theme-primary text-xs py-1.5 px-4">Update Skill</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-theme-muted text-xs font-mono py-6 text-center">No skills added yet.</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Add Skill Modal -->
+<div class="modal fade" id="addSkillModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content form-card-pro border-0">
+            <div class="modal-header border-b border-theme-subtle p-4">
+                <h5 class="modal-title text-sm font-extrabold text-[#8E1B1B] uppercase font-sans">Add New Skill</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ url_for('admin.add_skill') }}" method="POST">
+                <div class="modal-body p-5 space-y-4">
+                    <div>
+                        <label class="form-label-pro">Skill Name *</label>
+                        <input type="text" name="name" required placeholder="e.g. Python, TensorFlow, Flask" class="form-input-pro">
+                    </div>
+
+                    <div>
+                        <label class="form-label-pro">Category *</label>
+                        <input type="text" name="category" required placeholder="e.g. Machine Learning, Backend, Frontend" class="form-input-pro">
+                    </div>
+
+                    <div>
+                        <label class="form-label-pro">Proficiency Percentage (0-100)</label>
+                        <input type="number" name="proficiency" value="90" min="0" max="100" class="form-input-pro">
+                    </div>
+
+                    <div>
+                        <label class="form-label-pro">FontAwesome Icon Class</label>
+                        <input type="text" name="icon_class" value="fas fa-code" placeholder="fas fa-code" class="form-input-pro">
+                    </div>
+
+                    <div>
+                        <label class="form-label-pro">Display Order</label>
+                        <input type="number" name="order_index" value="0" class="form-input-pro">
+                    </div>
+                </div>
+                <div class="modal-footer border-t border-theme-subtle p-3">
+                    <button type="button" class="btn-theme-outline text-xs py-1.5 px-3" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-theme-primary text-xs py-1.5 px-4">Save Skill</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

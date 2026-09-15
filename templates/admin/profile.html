@@ -1,0 +1,145 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Manage Profile & Bio{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-8">
+    <div class="border-b border-theme-subtle pb-6">
+        <h1 class="text-2xl font-extrabold text-theme-primary uppercase tracking-tight font-sans">Profile & Bio Management</h1>
+        <p class="text-theme-muted text-xs font-mono mt-1">Update your personal details, hero headline, bio, avatar photo, and social links.</p>
+    </div>
+
+    <form action="{{ url_for('admin.profile') }}" method="POST" enctype="multipart/form-data" class="space-y-8">
+        
+        <!-- 1. Basic Details Card -->
+        <div class="card-editorial p-6 sm:p-8 space-y-6">
+            <h3 class="text-base font-bold text-theme-title font-mono uppercase tracking-wider border-b border-theme-subtle pb-3 flex items-center gap-2">
+                <i class="fas fa-user text-[#C62828]"></i> Basic Information
+            </h3>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div>
+                    <label for="full_name" class="form-label-pro">Full Name *</label>
+                    <input type="text" id="full_name" name="full_name" value="{{ profile.full_name }}" required class="form-input-pro">
+                </div>
+
+                <div>
+                    <label for="job_title" class="form-label-pro">Job Title / Role *</label>
+                    <input type="text" id="job_title" name="job_title" value="{{ profile.job_title }}" required class="form-input-pro">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                <div>
+                    <label for="email" class="form-label-pro">Contact Email</label>
+                    <input type="email" id="email" name="email" value="{{ profile.email }}" class="form-input-pro">
+                </div>
+
+                <div>
+                    <label for="phone" class="form-label-pro">Phone Number</label>
+                    <input type="text" id="phone" name="phone" value="{{ profile.phone }}" class="form-input-pro">
+                </div>
+
+                <div>
+                    <label for="location" class="form-label-pro">Location</label>
+                    <input type="text" id="location" name="location" value="{{ profile.location }}" class="form-input-pro">
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Profile Photo & Resume Upload -->
+        <div class="card-editorial p-6 sm:p-8 space-y-6">
+            <h3 class="text-base font-bold text-theme-title font-mono uppercase tracking-wider border-b border-theme-subtle pb-3 flex items-center gap-2">
+                <i class="fas fa-image text-[#C62828]"></i> Profile Photo & Resume
+            </h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                <div class="md:col-span-3 flex justify-center">
+                    <div class="hero-avatar-box w-28 h-28">
+                        <img src="{{ profile.avatar_url }}" alt="Profile Avatar" class="w-full h-full object-cover">
+                    </div>
+                </div>
+
+                <div class="md:col-span-9 space-y-4">
+                    <div>
+                        <label for="avatar_url" class="form-label-pro">Avatar Image URL</label>
+                        <input type="text" id="avatar_url" name="avatar_url" value="{{ profile.avatar_url }}" class="form-input-pro" placeholder="https://images.unsplash.com/... or /static/uploads/...">
+                    </div>
+
+                    <div>
+                        <label for="avatar_file" class="form-label-pro">Or Upload Image File</label>
+                        <input type="file" id="avatar_file" name="avatar_file" accept="image/*" class="w-full text-xs text-[#8E1B1B] file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-xs file:font-bold file:bg-[#8E1B1B] file:text-white hover:file:bg-[#C62828]">
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <label for="resume_url" class="form-label-pro">Resume / CV PDF URL</label>
+                <input type="text" id="resume_url" name="resume_url" value="{{ profile.resume_url }}" class="form-input-pro" placeholder="https://drive.google.com/... or #">
+            </div>
+        </div>
+
+        <!-- 3. Hero Headline & Bio -->
+        <div class="card-editorial p-6 sm:p-8 space-y-6">
+            <h3 class="text-base font-bold text-theme-title font-mono uppercase tracking-wider border-b border-theme-subtle pb-3 flex items-center gap-2">
+                <i class="fas fa-file-lines text-[#C62828]"></i> Hero Headline & Detailed Bio
+            </h3>
+
+            <div>
+                <label for="hero_headline" class="form-label-pro">Hero Main Headline</label>
+                <input type="text" id="hero_headline" name="hero_headline" value="{{ profile.hero_headline }}" class="form-input-pro">
+            </div>
+
+            <div>
+                <label for="hero_subheadline" class="form-label-pro">Hero Subtitle Paragraph</label>
+                <textarea id="hero_subheadline" name="hero_subheadline" rows="3" class="form-input-pro">{{ profile.hero_subheadline }}</textarea>
+            </div>
+
+            <div>
+                <label for="about_summary" class="form-label-pro">About Section Short Summary</label>
+                <textarea id="about_summary" name="about_summary" rows="3" class="form-input-pro">{{ profile.about_summary }}</textarea>
+            </div>
+
+            <div>
+                <label for="about_detailed" class="form-label-pro">Detailed Bio / Overview</label>
+                <textarea id="about_detailed" name="about_detailed" rows="5" class="form-input-pro">{{ profile.about_detailed }}</textarea>
+            </div>
+        </div>
+
+        <!-- 4. Social Links & Stats -->
+        <div class="card-editorial p-6 sm:p-8 space-y-6">
+            <h3 class="text-base font-bold text-theme-title font-mono uppercase tracking-wider border-b border-theme-subtle pb-3 flex items-center gap-2">
+                <i class="fas fa-share-nodes text-[#C62828]"></i> Social Profiles & Stats
+            </h3>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                <div>
+                    <label for="github_url" class="form-label-pro"><i class="fab fa-github me-1"></i> GitHub URL</label>
+                    <input type="text" id="github_url" name="github_url" value="{{ profile.github_url }}" class="form-input-pro">
+                </div>
+
+                <div>
+                    <label for="linkedin_url" class="form-label-pro"><i class="fab fa-linkedin me-1"></i> LinkedIn URL</label>
+                    <input type="text" id="linkedin_url" name="linkedin_url" value="{{ profile.linkedin_url }}" class="form-input-pro">
+                </div>
+
+                <div>
+                    <label for="twitter_url" class="form-label-pro"><i class="fab fa-x-twitter me-1"></i> Twitter URL</label>
+                    <input type="text" id="twitter_url" name="twitter_url" value="{{ profile.twitter_url }}" class="form-input-pro">
+                </div>
+            </div>
+
+            <div class="pt-2">
+                <label for="years_experience" class="form-label-pro">Years of Experience</label>
+                <input type="number" id="years_experience" name="years_experience" value="{{ profile.years_experience }}" class="w-full sm:w-1/3 form-input-pro">
+            </div>
+        </div>
+
+        <div class="flex justify-end">
+            <button type="submit" class="btn-theme-primary py-3 px-8">
+                <i class="fas fa-save me-1"></i> Save Profile Changes
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

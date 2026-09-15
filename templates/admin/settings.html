@@ -1,0 +1,67 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Settings & Security{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto space-y-6">
+    <div class="border-b border-theme-subtle pb-4">
+        <h1 class="text-xl sm:text-2xl font-extrabold text-theme-primary uppercase tracking-tight font-sans">Settings & Security</h1>
+        <p class="text-theme-muted text-xs font-mono mt-1">Manage admin credentials and application security.</p>
+    </div>
+
+    <!-- Password Change Card -->
+    <div class="card-editorial p-6 sm:p-8 space-y-6">
+        <h3 class="text-base font-bold text-theme-title font-mono uppercase tracking-wider border-b border-theme-subtle pb-3 flex items-center gap-2">
+            <i class="fas fa-key text-[#C62828]"></i> Change Admin Password
+        </h3>
+
+        <form action="{{ url_for('admin.settings') }}" method="POST" class="space-y-6">
+            <input type="hidden" name="action" value="change_password">
+
+            <div>
+                <label for="current_password" class="form-label-pro">Current Password *</label>
+                <input type="password" id="current_password" name="current_password" required placeholder="••••••••" class="form-input-pro">
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div>
+                    <label for="new_password" class="form-label-pro">New Password *</label>
+                    <input type="password" id="new_password" name="new_password" required minlength="6" placeholder="At least 6 characters" class="form-input-pro">
+                </div>
+
+                <div>
+                    <label for="confirm_password" class="form-label-pro">Confirm New Password *</label>
+                    <input type="password" id="confirm_password" name="confirm_password" required minlength="6" placeholder="Repeat new password" class="form-input-pro">
+                </div>
+            </div>
+
+            <div class="flex justify-end pt-2">
+                <button type="submit" class="btn-theme-primary py-3 px-6">
+                    <i class="fas fa-lock me-1"></i> Update Admin Password
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- System Info -->
+    <div class="card-editorial p-6 border-l-4 border-l-[#C62828] text-xs space-y-2">
+        <h4 class="font-mono font-bold text-theme-title uppercase tracking-wider flex items-center gap-2">
+            <i class="fas fa-server text-[#C62828]"></i> System Architecture Info
+        </h4>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-2 text-theme-muted">
+            <div>
+                <span class="font-mono text-theme-muted">Framework:</span>
+                <div class="text-theme-title font-bold mt-0.5">Python Flask</div>
+            </div>
+            <div>
+                <span class="font-mono text-theme-muted">Database:</span>
+                <div class="text-theme-title font-bold mt-0.5">SQLite (SQLAlchemy)</div>
+            </div>
+            <div>
+                <span class="font-mono text-theme-muted">Admin Account:</span>
+                <div class="text-theme-title font-bold mt-0.5">{{ current_user.username }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

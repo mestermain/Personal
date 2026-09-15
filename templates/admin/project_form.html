@@ -1,0 +1,112 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ "Edit Project" if project else "Add New Project" }}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-6">
+    <div class="flex items-center justify-between border-b border-theme-subtle pb-4">
+        <div>
+            <h1 class="text-xl sm:text-2xl font-extrabold text-theme-primary uppercase tracking-tight font-sans">{{ "Edit Project" if project else "Add New Project" }}</h1>
+            <p class="text-theme-muted text-xs font-mono mt-1">Fill out the project details for case study display.</p>
+        </div>
+
+        <a href="{{ url_for('admin.projects') }}" class="btn-theme-outline text-xs py-1.5 px-3">
+            <i class="fas fa-arrow-left me-1"></i> Back to Project List
+        </a>
+    </div>
+
+    <form action="{{ url_for('admin.edit_project', id=project.id) if project else url_for('admin.add_project') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+        
+        <div class="form-card-pro p-6 sm:p-8 space-y-5">
+            
+            <div class="grid grid-cols-1 sm:grid-cols-12 gap-5">
+                <div class="sm:col-span-8">
+                    <label for="title" class="form-label-pro">Project Title *</label>
+                    <input type="text" id="title" name="title" value="{{ project.title if project else '' }}" required placeholder="e.g. Smart Analytics & ML Dashboard" class="form-input-pro">
+                </div>
+
+                <div class="sm:col-span-4">
+                    <label for="category" class="form-label-pro">Category *</label>
+                    <input type="text" id="category" name="category" value="{{ project.category if project else 'Web Application' }}" required placeholder="e.g. Web Application, AI & Data" class="form-input-pro">
+                </div>
+            </div>
+
+            <div>
+                <label for="short_description" class="form-label-pro">Short Summary Description *</label>
+                <textarea id="short_description" name="short_description" rows="2" required placeholder="A brief one or two sentence summary displayed on project cards..." class="form-input-pro">{{ project.short_description if project else '' }}</textarea>
+            </div>
+
+            <div>
+                <label for="detailed_description" class="form-label-pro">Detailed Case Study Description</label>
+                <textarea id="detailed_description" name="detailed_description" rows="5" placeholder="Full explanation of architecture, technical challenges solved, and features..." class="form-input-pro">{{ project.detailed_description if project else '' }}</textarea>
+            </div>
+
+            <!-- Image Upload / URL -->
+            <div class="border-t border-theme-subtle pt-5">
+                <label class="form-label-pro mb-3">Project Thumbnail & Cover Image</label>
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-center">
+                    {% if project and project.image_url %}
+                        <div class="md:col-span-5">
+                            <div class="project-img-frame mb-1">
+                                <img src="{{ project.image_url }}" alt="Preview">
+                            </div>
+                            <div class="text-[10px] font-mono text-center text-[#8E1B1B]">Current Image Preview</div>
+                        </div>
+                    {% endif %}
+
+                    <div class="{{ 'md:col-span-7' if project and project.image_url else 'md:col-span-12' }} space-y-4">
+                        <div>
+                            <label for="image_url" class="form-label-pro">Image Thumbnail URL</label>
+                            <input type="text" id="image_url" name="image_url" value="{{ project.image_url if project else '' }}" placeholder="https://images.unsplash.com/... or /static/uploads/..." class="form-input-pro">
+                        </div>
+
+                        <div>
+                            <label for="image_file" class="form-label-pro">Or Upload Image File from Computer</label>
+                            <input type="file" id="image_file" name="image_file" accept="image/*" class="w-full text-xs text-[#8E1B1B] file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-[#8E1B1B] file:text-white hover:file:bg-[#C62828]">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Links & Tags -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 border-t border-theme-subtle pt-5">
+                <div>
+                    <label for="github_url" class="form-label-pro"><i class="fab fa-github me-1"></i> GitHub Repository URL</label>
+                    <input type="text" id="github_url" name="github_url" value="{{ project.github_url if project else '' }}" placeholder="https://github.com/..." class="form-input-pro">
+                </div>
+
+                <div>
+                    <label for="demo_url" class="form-label-pro"><i class="fas fa-globe me-1"></i> Live Demo Preview URL</label>
+                    <input type="text" id="demo_url" name="demo_url" value="{{ project.demo_url if project else '' }}" placeholder="https://example.com" class="form-input-pro">
+                </div>
+            </div>
+
+            <div>
+                <label for="tags" class="form-label-pro">Tech Stack Tags (Comma Separated)</label>
+                <input type="text" id="tags" name="tags" value="{{ project.tags if project else 'Python, Flask, Tailwind CSS' }}" placeholder="Python, Flask, SQLite, PyTorch" class="form-input-pro">
+            </div>
+
+            <!-- Toggles & Order -->
+            <div class="flex flex-wrap items-center justify-between gap-4 border-t border-theme-subtle pt-5">
+                <label class="flex items-center gap-2 text-xs font-bold text-[#8E1B1B] cursor-pointer">
+                    <input type="checkbox" name="is_featured" value="1" {{ 'checked' if (project and project.is_featured) or not project }} class="rounded accent-[#8E1B1B]">
+                    <span>Feature on Homepage Showcase</span>
+                </label>
+
+                <div class="flex items-center gap-2">
+                    <label for="order_index" class="form-label-pro mb-0">Display Order:</label>
+                    <input type="number" id="order_index" name="order_index" value="{{ project.order_index if project else 0 }}" class="w-20 form-input-pro text-center">
+                </div>
+            </div>
+
+        </div>
+
+        <div class="flex justify-end gap-3">
+            <a href="{{ url_for('admin.projects') }}" class="btn-theme-outline text-xs py-2 px-4">Cancel</a>
+            <button type="submit" class="btn-theme-primary text-xs py-2 px-6">
+                <i class="fas fa-save me-1"></i> {{ "Update Project" if project else "Create Project" }}
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
