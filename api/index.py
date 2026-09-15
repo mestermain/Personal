@@ -4,7 +4,6 @@ import os
 # Add root directory to python path for imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from app import app
+from app import create_app
 
-# Vercel entrypoint
-app = app
+app = create_app()
