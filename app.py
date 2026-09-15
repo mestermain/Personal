@@ -67,17 +67,11 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = db_url
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     
-    engine_options = {
+    app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
         'pool_pre_ping': True,
         'pool_recycle': 280,
+        'statement_cache_size': 0,
     }
-    
-    if db_url and "postgresql" in db_url:
-        engine_options['connect_args'] = {
-            'options': '-c prepare_threshold=0'
-        }
-
-    app.config['SQLALCHEMY_ENGINE_OPTIONS'] = engine_options
     
     # Maximum upload size (16MB)
     app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
