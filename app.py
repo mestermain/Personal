@@ -26,10 +26,17 @@ def create_app():
     app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
     app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)
     
-    # SQLite Database location
-    db_path = os.path.join(app.root_path, 'instance', 'personal_web.db')
-    os.makedirs(os.path.dirname(db_path), exist_ok=True)
-    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
+    # Database Configuration (PostgreSQL / Supabase in Production, SQLite in Development)
+    db_url = os.environ.get('DATABASE_URL')
+    if db_url:
+        if db_url.startswith("postgres://"):
+            db_url = db_url.replace("postgres://", "postgresql://", 1)
+        app.config['SQLALCHEMY_DATABASE_URI'] = db_url
+    else:
+        db_path = os.path.join(app.root_path, 'instance', 'personal_web.db')
+        os.makedirs(os.path.dirname(db_path), exist_ok=True)
+        app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
+        
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     
     # Maximum upload size (16MB)
