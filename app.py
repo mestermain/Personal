@@ -16,7 +16,9 @@ def sanitize_database_url(url):
         return url
         
     if url.startswith("postgres://"):
-        url = url.replace("postgres://", "postgresql://", 1)
+        url = url.replace("postgres://", "postgresql+psycopg://", 1)
+    elif url.startswith("postgresql://") and "+psycopg" not in url:
+        url = url.replace("postgresql://", "postgresql+psycopg://", 1)
 
     if url.count('@') > 1:
         scheme_sep = "://"
