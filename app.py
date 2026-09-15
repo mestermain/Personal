@@ -108,13 +108,6 @@ def create_app():
         app.logger.error(f"Internal Server Error: {e}")
         return render_template('500.html'), 500
 
-    # Safely create tables if not exist
-    with app.app_context():
-        try:
-            db.create_all()
-        except Exception as e:
-            app.logger.warning(f"db.create_all() warning: {e}")
-
     return app
 
 app = create_app()
