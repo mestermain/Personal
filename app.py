@@ -42,10 +42,18 @@ def create_app():
         app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
         
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+    
+    engine_options = {
         'pool_pre_ping': True,
         'pool_recycle': 280,
     }
+    
+    if db_url and ("postgresql" in db_url or "supabase" in db_url):
+        engine_options['connect_args'] = {
+            'options': '-c prepare_threshold=0'
+        }
+
+    app.config['SQLALCHEMY_ENGINE_OPTIONS'] = engine_options
     
     # Maximum upload size (16MB)
     app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
