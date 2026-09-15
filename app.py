@@ -58,12 +58,12 @@ def create_app():
     raw_db_url = os.environ.get('DATABASE_URL')
     if raw_db_url:
         db_url = sanitize_database_url(raw_db_url)
-        app.config['SQLALCHEMY_DATABASE_URI'] = db_url
     else:
         db_path = os.path.join(app.root_path, 'instance', 'personal_web.db')
         os.makedirs(os.path.dirname(db_path), exist_ok=True)
-        app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
+        db_url = f'sqlite:///{db_path}'
         
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_url
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     
     engine_options = {
@@ -71,7 +71,7 @@ def create_app():
         'pool_recycle': 280,
     }
     
-    if db_url and ("postgresql" in db_url or "supabase" in db_url):
+    if "postgresql" in db_url or "supabase" in db_url:
         engine_options['connect_args'] = {
             'options': '-c prepare_threshold=0'
         }
