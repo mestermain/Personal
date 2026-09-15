@@ -14,8 +14,17 @@ import urllib.parse
 def sanitize_database_url(url):
     if not url:
         return url
+        
+    try:
+        import pg8000
+        driver = "postgresql+pg8000://"
+    except ImportError:
+        driver = "postgresql://"
+
     if url.startswith("postgres://"):
-        url = url.replace("postgres://", "postgresql://", 1)
+        url = url.replace("postgres://", driver, 1)
+    elif url.startswith("postgresql://") and "+pg8000" not in url and "+psycopg2" not in url:
+        url = url.replace("postgresql://", driver, 1)
     
     if url.count('@') > 1:
         scheme_sep = "://"
@@ -71,7 +80,7 @@ def create_app():
         'pool_recycle': 280,
     }
     
-    if "postgresql" in db_url or "supabase" in db_url:
+    if "psycopg2" in db_url:
         engine_options['connect_args'] = {
             'options': '-c prepare_threshold=0'
         }
