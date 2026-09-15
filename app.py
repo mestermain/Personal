@@ -70,7 +70,6 @@ def create_app():
     app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
         'pool_pre_ping': True,
         'pool_recycle': 280,
-        'statement_cache_size': 0,
     }
     
     # Maximum upload size (16MB)
