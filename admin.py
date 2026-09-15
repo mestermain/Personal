@@ -21,10 +21,14 @@ def save_uploaded_file(file_storage):
     
     unique_name = f"{uuid.uuid4().hex[:12]}_{secure_filename(file_storage.filename)}"
     upload_dir = os.path.join(current_app.static_folder, 'uploads')
-    os.makedirs(upload_dir, exist_ok=True)
-    file_path = os.path.join(upload_dir, unique_name)
-    file_storage.save(file_path)
-    return url_for('static', filename=f'uploads/{unique_name}')
+    try:
+        os.makedirs(upload_dir, exist_ok=True)
+        file_path = os.path.join(upload_dir, unique_name)
+        file_storage.save(file_path)
+        return url_for('static', filename=f'uploads/{unique_name}')
+    except Exception as e:
+        current_app.logger.error(f"Failed to save upload locally: {e}")
+        raise ValueError("File upload failed: Serverless platforms (like Vercel) have read-only storage. Please paste an Image URL instead.")
 
 def delete_uploaded_file(file_url):
     if not file_url or not file_url.startswith('/static/uploads/'):
@@ -114,7 +118,7 @@ def profile():
                     if old_avatar_url and old_avatar_url != new_avatar_url:
                         delete_uploaded_file(old_avatar_url)
                     profile.avatar_url = new_avatar_url
-            except ValueError as ve:
+            except Exception as ve:
                 flash(str(ve), 'danger')
                 return redirect(url_for('admin.profile'))
 
@@ -209,7 +213,7 @@ def add_project():
                 uploaded_url = save_uploaded_file(image_file)
                 if uploaded_url:
                     image_url = uploaded_url
-            except ValueError as ve:
+            except Exception as ve:
                 flash(str(ve), 'danger')
                 return redirect(url_for('admin.add_project'))
 
@@ -264,7 +268,7 @@ def edit_project(id):
                 if uploaded_url:
                     delete_uploaded_file(project.image_url)
                     project.image_url = uploaded_url
-            except ValueError as ve:
+            except Exception as ve:
                 flash(str(ve), 'danger')
                 return redirect(url_for('admin.edit_project', id=id))
         elif image_url:
