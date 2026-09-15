@@ -125,14 +125,23 @@ def contact():
         flash(msg, 'danger')
         return redirect(url_for('main.index') + '#contact')
 
-    new_msg = Message(
-        sender_name=sender_name,
-        sender_email=sender_email,
-        subject=subject or 'Portfolio Contact Inquiry',
-        message_body=message_body
-    )
-    db.session.add(new_msg)
-    db.session.commit()
+    try:
+        new_msg = Message(
+            sender_name=sender_name,
+            sender_email=sender_email,
+            subject=subject or 'Portfolio Contact Inquiry',
+            message_body=message_body
+        )
+        db.session.add(new_msg)
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        current_app.logger.error(f"Database error in contact form: {e}")
+        msg = 'Database connection issue. Unable to save message at this moment.'
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify({'status': 'error', 'message': msg}), 500
+        flash(msg, 'danger')
+        return redirect(url_for('main.index') + '#contact')
 
     # Optional email notification
     send_notification_email(sender_name, sender_email, subject, message_body)

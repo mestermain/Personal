@@ -220,7 +220,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     body: formData
                 });
 
-                const data = await response.json();
+                let data;
+                try {
+                    data = await response.json();
+                } catch (parseErr) {
+                    data = { status: 'error', message: `Server HTTP ${response.status} Error. Please verify database connection.` };
+                }
 
                 if (response.ok && data.status === 'success') {
                     contactStatus.innerHTML = `
@@ -239,7 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } catch (err) {
                 contactStatus.innerHTML = `
                     <div class="alert alert-danger bg-rose-50 text-rose-900 border border-rose-300 rounded-lg p-4 mb-4 font-semibold text-sm flex items-center gap-2">
-                        <i class="fas fa-exclamation-triangle text-[#C62828] text-base"></i> Network error. Please try again.
+                        <i class="fas fa-exclamation-triangle text-[#C62828] text-base"></i> Unable to connect to server. Please try again.
                     </div>
                 `;
             } finally {

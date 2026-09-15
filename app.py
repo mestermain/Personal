@@ -32,6 +32,9 @@ def create_app():
     if db_url:
         if db_url.startswith("postgres://"):
             db_url = db_url.replace("postgres://", "postgresql://", 1)
+        if "sslmode=" not in db_url and "supabase" in db_url.lower():
+            separator = "&" if "?" in db_url else "?"
+            db_url = f"{db_url}{separator}sslmode=require"
         app.config['SQLALCHEMY_DATABASE_URI'] = db_url
     else:
         db_path = os.path.join(app.root_path, 'instance', 'personal_web.db')
@@ -74,9 +77,12 @@ def create_app():
         app.logger.error(f"Internal Server Error: {e}")
         return render_template('500.html'), 500
 
-    # Create tables if not exist
+    # Safely create tables if not exist
     with app.app_context():
-        db.create_all()
+        try:
+            db.create_all()
+        except Exception as e:
+            app.logger.warning(f"db.create_all() warning: {e}")
 
     return app
 

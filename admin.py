@@ -122,8 +122,14 @@ def profile():
                 flash(str(ve), 'danger')
                 return redirect(url_for('admin.profile'))
 
-        db.session.commit()
-        flash('Profile and Bio details updated successfully!', 'success')
+        try:
+            db.session.commit()
+            flash('Profile and Bio details updated successfully!', 'success')
+        except Exception as e:
+            db.session.rollback()
+            current_app.logger.error(f"Error saving profile: {e}")
+            flash(f'Database update error: {str(e)}', 'danger')
+            
         return redirect(url_for('admin.profile'))
 
     return render_template('admin/profile.html', profile=profile)
