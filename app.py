@@ -11,9 +11,10 @@ from admin import admin_bp
 
 @event.listens_for(Engine, "connect")
 def set_sqlite_pragma(dbapi_connection, connection_record):
-    cursor = dbapi_connection.cursor()
-    cursor.execute("PRAGMA foreign_keys=ON")
-    cursor.close()
+    if dbapi_connection.__class__.__module__.startswith('sqlite3'):
+        cursor = dbapi_connection.cursor()
+        cursor.execute("PRAGMA foreign_keys=ON")
+        cursor.close()
 
 def create_app():
     app = Flask(__name__)
@@ -38,6 +39,10 @@ def create_app():
         app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
         
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+        'pool_pre_ping': True,
+        'pool_recycle': 280,
+    }
     
     # Maximum upload size (16MB)
     app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
