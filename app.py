@@ -9,6 +9,33 @@ from routes import main_bp
 from auth import auth_bp
 from admin import admin_bp
 
+import urllib.parse
+
+def sanitize_database_url(url):
+    if not url:
+        return url
+    if url.startswith("postgres://"):
+        url = url.replace("postgres://", "postgresql://", 1)
+    
+    if url.count('@') > 1:
+        scheme_sep = "://"
+        if scheme_sep in url:
+            scheme, rest = url.split(scheme_sep, 1)
+            last_at_idx = rest.rfind('@')
+            user_pass = rest[:last_at_idx]
+            host_db = rest[last_at_idx:]
+            
+            if ':' in user_pass:
+                user, pwd = user_pass.split(':', 1)
+                pwd_encoded = urllib.parse.quote(urllib.parse.unquote(pwd), safe='')
+                url = f"{scheme}://{user}:{pwd_encoded}{host_db}"
+
+    if "sslmode=" not in url and "supabase" in url.lower():
+        separator = "&" if "?" in url else "?"
+        url = f"{url}{separator}sslmode=require"
+        
+    return url
+
 @event.listens_for(Engine, "connect")
 def set_sqlite_pragma(dbapi_connection, connection_record):
     if dbapi_connection.__class__.__module__.startswith('sqlite3'):
@@ -28,13 +55,9 @@ def create_app():
     app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)
     
     # Database Configuration (PostgreSQL / Supabase in Production, SQLite in Development)
-    db_url = os.environ.get('DATABASE_URL')
-    if db_url:
-        if db_url.startswith("postgres://"):
-            db_url = db_url.replace("postgres://", "postgresql://", 1)
-        if "sslmode=" not in db_url and "supabase" in db_url.lower():
-            separator = "&" if "?" in db_url else "?"
-            db_url = f"{db_url}{separator}sslmode=require"
+    raw_db_url = os.environ.get('DATABASE_URL')
+    if raw_db_url:
+        db_url = sanitize_database_url(raw_db_url)
         app.config['SQLALCHEMY_DATABASE_URI'] = db_url
     else:
         db_path = os.path.join(app.root_path, 'instance', 'personal_web.db')
