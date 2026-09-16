@@ -9,9 +9,9 @@ def migrate(supabase_db_url):
         supabase_db_url = supabase_db_url.replace("postgres://", "postgresql://", 1)
 
     print(f"Connecting to Supabase Database...")
+    os.environ['DATABASE_URL'] = supabase_db_url
     
     app = create_app()
-    app.config['SQLALCHEMY_DATABASE_URI'] = supabase_db_url
 
     with app.app_context():
         print("1. Creating database tables in Supabase...")
