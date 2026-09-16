@@ -102,7 +102,7 @@ def profile():
         profile.resume_url = request.form.get('resume_url', '').strip()
         profile.github_url = request.form.get('github_url', '').strip()
         profile.linkedin_url = request.form.get('linkedin_url', '').strip()
-        profile.twitter_url = request.form.get('twitter_url', '').strip()
+        profile.leetcode_url = request.form.get('leetcode_url', '').strip()
         
         try:
             profile.years_experience = int(request.form.get('years_experience', 5))

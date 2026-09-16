@@ -37,7 +37,7 @@ class SiteProfile(db.Model):
     resume_url = db.Column(db.String(500), default="#")
     github_url = db.Column(db.String(300), default="https://github.com")
     linkedin_url = db.Column(db.String(300), default="https://linkedin.com")
-    twitter_url = db.Column(db.String(300), default="https://twitter.com")
+    leetcode_url = db.Column(db.String(300), default="https://leetcode.com")
     years_experience = db.Column(db.Integer, default=5)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 

@@ -29,10 +29,10 @@ def seed_database():
                 phone="+1 (555) 382-9102",
                 avatar_url="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80",
                 resume_url="#",
-                github_url="https://github.com",
-                linkedin_url="https://linkedin.com",
-                twitter_url="https://twitter.com",
-                years_experience=5
+                github_url="https://github.com/talhasadeeq",
+                linkedin_url="https://linkedin.com/in/talhasadeeq",
+                leetcode_url="https://leetcode.com/u/talhasadeeq/",
+                years_experience=6
             )
             db.session.add(profile)
             print("--> Seeded Site Profile")
