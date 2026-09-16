@@ -5,10 +5,72 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{{ profile.full_name if profile else "Personal Portfolio" }} | {{ profile.job_title if profile else "Computer Scientist" }}{% endblock %}</title>
     
-    <!-- SEO Meta Tags -->
-    <meta name="description" content="{{ profile.about_summary if profile else 'Computer Scientist & Software Engineer Portfolio' }}">
-    <meta name="keywords" content="Computer Science, Portfolio, Software Engineer, Machine Learning, Python, Flask, Research">
-    <meta name="author" content="{{ profile.full_name if profile else 'Developer' }}">
+    <!-- Primary SEO Meta Tags -->
+    <meta name="description" content="{{ profile.about_summary if profile else 'Talha Sadeeq - Senior AI Engineer & Full Stack Architect specializing in Machine Learning, Python, Flask, PyTorch, and scalable web architectures.' }}">
+    <meta name="keywords" content="Talha Sadeeq, AI Engineer, Full Stack Architect, Software Engineer, Machine Learning, Python, Flask, PyTorch, Deep Learning, Computer Science Portfolio">
+    <meta name="author" content="{{ profile.full_name if profile else 'Talha Sadeeq' }}">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="googlebot" content="index, follow">
+    <link rel="canonical" href="{{ request.url }}">
+
+    <!-- Open Graph / Facebook / LinkedIn Meta Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:site_name" content="Talha Sadeeq | Senior AI Engineer & Full Stack Architect">
+    <meta property="og:title" content="{% block og_title %}{{ profile.full_name if profile else 'Talha Sadeeq' }} | Senior AI Engineer & Full Stack Architect{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}{{ profile.about_summary if profile else 'Specialized in Machine Learning, Python, Flask, PyTorch, and building scalable full-stack web applications.' }}{% endblock %}">
+    <meta property="og:image" content="{{ request.url_root }}static/images/logo-red.png">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="{{ request.url }}">
+    <meta name="twitter:title" content="{% block twitter_title %}{{ profile.full_name if profile else 'Talha Sadeeq' }} | Senior AI Engineer & Full Stack Architect{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_description %}{{ profile.about_summary if profile else 'Specialized in Machine Learning, Python, Flask, PyTorch, and building scalable full-stack web applications.' }}{% endblock %}">
+    <meta name="twitter:image" content="{{ request.url_root }}static/images/logo-red.png">
+
+    <!-- JSON-LD Structured Data (Schema.org Person & Website) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "{{ request.url_root }}#website",
+          "url": "{{ request.url_root }}",
+          "name": "Talha Sadeeq Portfolio",
+          "description": "Personal Portfolio of Talha Sadeeq - Senior AI Engineer & Full Stack Architect",
+          "publisher": {
+            "@type": "Person",
+            "name": "{{ profile.full_name if profile else 'Talha Sadeeq' }}"
+          }
+        },
+        {
+          "@type": "Person",
+          "@id": "{{ request.url_root }}#person",
+          "name": "{{ profile.full_name if profile else 'Talha Sadeeq' }}",
+          "url": "{{ request.url_root }}",
+          "jobTitle": "{{ profile.job_title if profile else 'Senior AI Engineer & Full Stack Architect' }}",
+          "description": "{{ profile.about_summary if profile else 'Specialized in Machine Learning, Python, Flask, PyTorch, and building scalable full-stack web applications.' }}",
+          "sameAs": [
+            "{{ profile.github_url if profile and profile.github_url else 'https://github.com/talhasadeeq' }}",
+            "{{ profile.linkedin_url if profile and profile.linkedin_url else 'https://linkedin.com/in/talhasadeeq' }}",
+            "{{ profile.leetcode_url if profile and profile.leetcode_url else 'https://leetcode.com/u/talhasadeeq/' }}"
+          ],
+          "knowsAbout": [
+            "Artificial Intelligence",
+            "Machine Learning",
+            "Full Stack Web Architecture",
+            "Python",
+            "Flask",
+            "PyTorch",
+            "Deep Learning",
+            "PostgreSQL",
+            "Tailwind CSS"
+          ]
+        }
+      ]
+    }
+    </script>
 
     <!-- Google Fonts: Plus Jakarta Sans & Space Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

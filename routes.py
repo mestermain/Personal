@@ -146,8 +146,42 @@ def contact():
     # Optional email notification
     send_notification_email(sender_name, sender_email, subject, message_body)
 
-    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        return jsonify({'status': 'success', 'message': 'Thank you! Your message has been sent successfully.'})
-
     flash('Thank you! Your message has been sent successfully.', 'success')
     return redirect(url_for('main.index') + '#contact')
+
+@main_bp.route('/robots.txt')
+def robots():
+    robots_content = """User-agent: *
+Allow: /
+Disallow: /admin/
+
+Sitemap: https://talhasadeeq.vercel.app/sitemap.xml
+"""
+    from flask import Response
+    return Response(robots_content, mimetype='text/plain')
+
+@main_bp.route('/sitemap.xml')
+def sitemap():
+    from flask import Response
+    host = request.url_root.rstrip('/')
+    projects = Project.query.all()
+    papers = Research.query.all()
+    
+    xml_lines = [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
+    ]
+    
+    # Home Page
+    xml_lines.append(f'  <url><loc>{host}/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>')
+    
+    # Projects
+    for p in projects:
+        xml_lines.append(f'  <url><loc>{host}/project/{p.slug}</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>')
+        
+    # Research
+    for r in papers:
+        xml_lines.append(f'  <url><loc>{host}/research/{r.id}</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>')
+        
+    xml_lines.append('</urlset>')
+    return Response('\n'.join(xml_lines), mimetype='application/xml')
