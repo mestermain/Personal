@@ -65,8 +65,18 @@
                     <a href="{{ url_for('main.index') }}#contact" class="nav-link-theme font-bold">Contact</a>
                 </div>
 
-                <!-- Right Actions: Contact Button & Mobile Menu Toggle -->
+                <!-- Right Actions: Theme Selector, Contact Button & Mobile Menu Toggle -->
                 <div class="flex items-center gap-2.5">
+                    <!-- Theme Preset Selector -->
+                    <div class="relative inline-block text-left">
+                        <select id="theme-preset-select" class="text-xs font-mono font-bold bg-theme-secondary text-theme-primary border border-theme-subtle rounded-md px-2.5 py-1.5 focus:outline-none cursor-pointer">
+                            <option value="red">🎨 Red Crimson</option>
+                            <option value="ocean">🌊 Ocean Blue</option>
+                            <option value="sunset">🌅 Sunset Amber</option>
+                            <option value="forest">🌲 Forest Emerald</option>
+                        </select>
+                    </div>
+
                     <!-- Dedicated Navbar Contact Button -->
                     <a href="{{ url_for('main.index') }}#contact" class="hidden sm:inline-flex btn-theme-primary py-1.5 px-3.5 text-xs">
                         Contact Me <i class="fas fa-arrow-right text-[10px] ms-1"></i>

@@ -4,10 +4,34 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // -------------------------------------------------------------
-    // 1. Single Light Theme Enforcement
+    // 1. Dynamic Theme Preset Selection (Red / Ocean / Sunset / Forest)
     // -------------------------------------------------------------
-    document.documentElement.setAttribute('data-theme', 'light');
-    localStorage.setItem('theme', 'light');
+    const themeSelect = document.getElementById('theme-preset-select');
+    const savedTheme = localStorage.getItem('theme_preset') || 'red';
+    
+    function applyThemePreset(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme_preset', theme);
+        if (themeSelect) {
+            themeSelect.value = theme;
+        }
+    }
+
+    applyThemePreset(savedTheme);
+
+    if (themeSelect) {
+        themeSelect.addEventListener('change', (e) => {
+            const chosenTheme = e.target.value;
+            
+            if (document.startViewTransition) {
+                document.startViewTransition(() => {
+                    applyThemePreset(chosenTheme);
+                });
+            } else {
+                applyThemePreset(chosenTheme);
+            }
+        });
+    }
 
     // -------------------------------------------------------------
     // 2. Admin Sidebar Drawer Toggle for Mobile (<992px)

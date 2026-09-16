@@ -2,8 +2,8 @@
    Zero Black, Zero Dark Gray, Zero Black Shadows anywhere on the site.
 */
 
-:root {
-    /* Light Theme (Sole Theme) */
+:root, html[data-theme="red"] {
+    /* Red Crimson Editorial Theme */
     --bg-primary: #FFFFFF;
     --bg-secondary: #FFF5F5;
     --bg-navbar: rgba(255, 255, 255, 0.96);
@@ -40,6 +40,161 @@
     --back-to-top-bg: #FFFFFF;
     --back-to-top-text: #8E1B1B;
     --back-to-top-border: #8E1B1B;
+}
+
+/* Ocean Neon Theme Preset */
+html[data-theme="ocean"] {
+    --bg-primary: #F0F9FF;
+    --bg-secondary: #E0F2FE;
+    --bg-navbar: rgba(240, 249, 255, 0.96);
+    --text-primary: #0369A1;
+    --text-secondary: #0C4A6E;
+    --text-muted: #0284C7;
+    
+    --card-bg: #FFFFFF;
+    --card-text: #0369A1;
+    --card-title: #0C4A6E;
+    --card-border: rgba(2, 132, 199, 0.3);
+    --subtle-border: rgba(2, 132, 199, 0.25);
+    
+    --accent-color: #0284C7;
+    --red-primary: #0284C7;
+    --red-bright: #0EA5E9;
+    --red-deep: #0369A1;
+    
+    --btn-primary-bg: #0284C7;
+    --btn-primary-text: #FFFFFF;
+    --btn-primary-hover-bg: #0369A1;
+    --btn-primary-hover-text: #FFFFFF;
+    
+    --btn-outline-text: #0284C7;
+    --btn-outline-border: #0284C7;
+    --btn-outline-hover-bg: #0284C7;
+    --btn-outline-hover-text: #FFFFFF;
+    
+    --progress-bar-bg: #0284C7;
+    --back-to-top-text: #0284C7;
+    --back-to-top-border: #0284C7;
+}
+
+/* Sunset Amber Theme Preset */
+html[data-theme="sunset"] {
+    --bg-primary: #FFFBEB;
+    --bg-secondary: #FEF3C7;
+    --bg-navbar: rgba(255, 251, 235, 0.96);
+    --text-primary: #B45309;
+    --text-secondary: #78350F;
+    --text-muted: #D97706;
+    
+    --card-bg: #FFFFFF;
+    --card-text: #B45309;
+    --card-title: #78350F;
+    --card-border: rgba(217, 119, 6, 0.3);
+    --subtle-border: rgba(217, 119, 6, 0.25);
+    
+    --accent-color: #D97706;
+    --red-primary: #D97706;
+    --red-bright: #F59E0B;
+    --red-deep: #B45309;
+    
+    --btn-primary-bg: #D97706;
+    --btn-primary-text: #FFFFFF;
+    --btn-primary-hover-bg: #B45309;
+    --btn-primary-hover-text: #FFFFFF;
+    
+    --btn-outline-text: #D97706;
+    --btn-outline-border: #D97706;
+    --btn-outline-hover-bg: #D97706;
+    --btn-outline-hover-text: #FFFFFF;
+    
+    --progress-bar-bg: #D97706;
+    --back-to-top-text: #D97706;
+    --back-to-top-border: #D97706;
+}
+
+/* Forest Emerald Theme Preset */
+html[data-theme="forest"] {
+    --bg-primary: #F0FDF4;
+    --bg-secondary: #DCFCE7;
+    --bg-navbar: rgba(240, 253, 244, 0.96);
+    --text-primary: #15803D;
+    --text-secondary: #14532D;
+    --text-muted: #16A34A;
+    
+    --card-bg: #FFFFFF;
+    --card-text: #15803D;
+    --card-title: #14532D;
+    --card-border: rgba(22, 163, 74, 0.3);
+    --subtle-border: rgba(22, 163, 74, 0.25);
+    
+    --accent-color: #16A34A;
+    --red-primary: #16A34A;
+    --red-bright: #22C55E;
+    --red-deep: #15803D;
+    
+    --btn-primary-bg: #16A34A;
+    --btn-primary-text: #FFFFFF;
+    --btn-primary-hover-bg: #15803D;
+    --btn-primary-hover-text: #FFFFFF;
+    
+    --btn-outline-text: #16A34A;
+    --btn-outline-border: #16A34A;
+    --btn-outline-hover-bg: #16A34A;
+    --btn-outline-hover-text: #FFFFFF;
+    
+    --progress-bar-bg: #16A34A;
+    --back-to-top-text: #16A34A;
+    --back-to-top-border: #16A34A;
+}
+
+/* Orbiting Avatar Rings & Rotating Dots */
+.hero-orbit-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.orbit-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1.5px dashed var(--subtle-border);
+    animation: spinOrbit 22s linear infinite;
+    pointer-events: none;
+    will-change: transform;
+}
+
+.orbit-ring-1 {
+    width: 114%;
+    height: 114%;
+    animation-duration: 22s;
+}
+
+.orbit-ring-2 {
+    width: 130%;
+    height: 130%;
+    animation-duration: 35s;
+    animation-direction: reverse;
+    border-style: dotted;
+    border-color: var(--accent-color);
+    opacity: 0.6;
+}
+
+.orbit-dot {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: var(--red-bright);
+    border-radius: 50%;
+    box-shadow: 0 0 12px var(--red-bright);
+    top: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+@keyframes spinOrbit {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
 
 html, body {
