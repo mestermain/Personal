@@ -440,15 +440,163 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
     font-family: 'Space Mono', 'Fira Code', 'Roboto Mono', monospace;
 }
 
-/* Hero Avatar Box */
+/* ==========================================
+   ADVANCED MODERN ANIMATIONS & MICRO-INTERACTIONS
+   ========================================== */
+
+/* Floating Hero Avatar Animation */
+@keyframes floatAvatar {
+    0%, 100% {
+        transform: translateY(0px) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-8px) rotate(0.5deg);
+    }
+}
+
+@keyframes pulseGlow {
+    0%, 100% {
+        box-shadow: 0 8px 30px rgba(142, 27, 27, 0.18), 0 0 0 0 rgba(198, 40, 40, 0.2);
+    }
+    50% {
+        box-shadow: 0 14px 40px rgba(142, 27, 27, 0.28), 0 0 20px 4px rgba(198, 40, 40, 0.25);
+    }
+}
+
+@keyframes radarPulse {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(198, 40, 40, 0.7);
+    }
+    70% {
+        transform: scale(1.15);
+        box-shadow: 0 0 0 8px rgba(198, 40, 40, 0);
+    }
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(198, 40, 40, 0);
+    }
+}
+
+/* Scroll Reveal Base Classes */
+.reveal-element {
+    opacity: 0;
+    transform: translateY(32px) scale(0.98);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+}
+
+.reveal-element.revealed {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+
+/* Hero Avatar Box Animation */
 .hero-avatar-box, .hero-avatar-box-theme {
     position: relative;
     border-radius: 12px;
     padding: 5px;
     background: var(--card-bg);
     border: 2px solid var(--card-border);
-    box-shadow: 6px 6px 0px rgba(142, 27, 27, 0.25);
+    animation: floatAvatar 6s ease-in-out infinite, pulseGlow 4s infinite alternate;
     overflow: hidden;
+    will-change: transform, box-shadow;
+}
+
+/* Card Editorial Spotlight & 3D Interactive Tilt */
+.card-editorial {
+    background-color: var(--card-bg);
+    color: var(--card-text);
+    border: 2px solid var(--card-border);
+    border-radius: 12px;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
+    box-shadow: 0 6px 20px rgba(142, 27, 27, 0.1);
+    position: relative;
+    overflow: hidden;
+    transform-style: preserve-3d;
+}
+
+/* Spotlight Hover Overlay */
+.card-editorial::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(500px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(198, 40, 40, 0.1), transparent 75%);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: 1;
+}
+
+.card-editorial:hover::before {
+    opacity: 1;
+}
+
+.card-editorial:hover {
+    transform: translateY(-6px) scale(1.015);
+    border-color: rgba(198, 40, 40, 0.5);
+    box-shadow: 0 16px 36px rgba(142, 27, 27, 0.22);
+}
+
+/* Dynamic Button Sweep & Shine Animation */
+.btn-theme-primary {
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.btn-theme-primary::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -60%;
+    width: 220%;
+    height: 200%;
+    background: linear-gradient(60deg, transparent 30%, rgba(255, 255, 255, 0.35) 50%, transparent 70%);
+    transform: rotate(30deg) translateX(-100%);
+    transition: transform 0.75s ease;
+    pointer-events: none;
+}
+
+.btn-theme-primary:hover::after {
+    transform: rotate(30deg) translateX(100%);
+}
+
+.btn-theme-outline {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-theme-outline::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -60%;
+    width: 220%;
+    height: 200%;
+    background: linear-gradient(60deg, transparent 30%, rgba(142, 27, 27, 0.15) 50%, transparent 70%);
+    transform: rotate(30deg) translateX(-100%);
+    transition: transform 0.75s ease;
+    pointer-events: none;
+}
+
+.btn-theme-outline:hover::after {
+    transform: rotate(30deg) translateX(100%);
+}
+
+/* Radar Pulse Indicator */
+.radar-pulse {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #C62828;
+    animation: radarPulse 2s infinite ease-in-out;
 }
 
 /* Custom Scrollbar */

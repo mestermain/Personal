@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // -------------------------------------------------------------
-    // 4. Card Spotlight Glow Hover Effect
+    // 4. Card Spotlight Glow & 3D Interactive Tilt Effect
     // -------------------------------------------------------------
     const cards = document.querySelectorAll('.card-editorial');
     cards.forEach(card => {
@@ -82,13 +82,84 @@ document.addEventListener('DOMContentLoaded', () => {
             const rect = card.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const rotateX = ((y - centerY) / centerY) * -6; // Max 6deg tilt
+            const rotateY = ((x - centerX) / centerX) * 6;
+            
             card.style.setProperty('--mouse-x', `${x}px`);
             card.style.setProperty('--mouse-y', `${y}px`);
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-6px) scale(1.015)`;
+        });
+
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = '';
         });
     });
 
     // -------------------------------------------------------------
-    // 5. Animated Skill Progress Bars (Intersection Observer)
+    // 5. Scroll Reveal Animation System (Intersection Observer)
+    // -------------------------------------------------------------
+    const revealTargets = document.querySelectorAll('.card-editorial, section h2, .hero-avatar-box-theme, .work-card-accent, .edu-card-accent');
+    revealTargets.forEach((el, index) => {
+        el.classList.add('reveal-element');
+        const delay = (index % 4) + 1;
+        el.classList.add(`reveal-delay-${delay}`);
+    });
+
+    if ('IntersectionObserver' in window) {
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+        revealTargets.forEach(el => revealObserver.observe(el));
+    } else {
+        revealTargets.forEach(el => el.classList.add('revealed'));
+    }
+
+    // -------------------------------------------------------------
+    // 6. Animated Number Counter for Stats Bar
+    // -------------------------------------------------------------
+    const statCounters = document.querySelectorAll('.text-2xl.font-extrabold.font-mono, .text-4xl.font-extrabold.font-mono');
+    if (statCounters.length > 0 && 'IntersectionObserver' in window) {
+        const counterObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const el = entry.target;
+                    const textVal = el.textContent.trim();
+                    const targetNum = parseInt(textVal.replace(/\D/g, ''), 10);
+                    const suffix = textVal.includes('+') ? '+' : '';
+                    
+                    if (!isNaN(targetNum) && targetNum > 0) {
+                        let current = 0;
+                        const duration = 1200; // ms
+                        const stepTime = Math.max(Math.floor(duration / targetNum), 30);
+                        
+                        const timer = setInterval(() => {
+                            current += 1;
+                            el.textContent = `${current}${suffix}`;
+                            if (current >= targetNum) {
+                                clearInterval(timer);
+                                el.textContent = textVal; // restore original text exact format
+                            }
+                        }, stepTime);
+                    }
+                    observer.unobserve(el);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        statCounters.forEach(counter => counterObserver.observe(counter));
+    }
+
+    // -------------------------------------------------------------
+    // 7. Animated Skill Progress Bars (Intersection Observer)
     // -------------------------------------------------------------
     const skillFills = document.querySelectorAll('.skill-progress-fill');
     if (skillFills.length > 0 && 'IntersectionObserver' in window) {
