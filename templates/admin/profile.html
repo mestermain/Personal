@@ -56,14 +56,15 @@
             <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
                 <div class="md:col-span-3 flex justify-center">
                     <div class="hero-avatar-box w-28 h-28">
-                        <img src="{{ profile.avatar_url }}" alt="Profile Avatar" class="w-full h-full object-cover">
+                        <img src="{{ profile.avatar_url | gdrive_url }}" alt="Profile Avatar" class="w-full h-full object-cover">
                     </div>
                 </div>
 
                 <div class="md:col-span-9 space-y-4">
                     <div>
                         <label for="avatar_url" class="form-label-pro">Avatar Image URL</label>
-                        <input type="text" id="avatar_url" name="avatar_url" value="{{ profile.avatar_url }}" class="form-input-pro" placeholder="https://images.unsplash.com/... or /static/uploads/...">
+                        <input type="text" id="avatar_url" name="avatar_url" value="{{ profile.avatar_url }}" class="form-input-pro" placeholder="Paste image link or Google Drive link (https://drive.google.com/...)">
+                        <p class="text-[11px] text-[#C62828] font-mono mt-1"><i class="fab fa-google-drive me-1"></i> Google Drive share links supported! Copy & paste your Google Drive link here.</p>
                     </div>
 
                     <div>

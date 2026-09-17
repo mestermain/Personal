@@ -22,9 +22,19 @@ def migrate(supabase_db_url):
         sqlite_uri = f'sqlite:///{sqlite_path}'
         sqlite_engine = create_engine(sqlite_uri)
 
-        print("2. Migrating records from local SQLite...")
+        print("2. Syncing records from local SQLite to Supabase...")
+        
+        # Clear existing tables in Supabase so local state matches 100%
+        db.session.query(Message).delete()
+        db.session.query(Experience).delete()
+        db.session.query(Research).delete()
+        db.session.query(Project).delete()
+        db.session.query(Skill).delete()
+        db.session.query(AdminUser).delete()
+        db.session.query(SiteProfile).delete()
+        db.session.commit()
 
-        # Copy Admin Users
+        # Copy Admin Users & Data from local SQLite
         with sqlite_engine.connect() as conn:
             from sqlalchemy.orm import sessionmaker
             LocalSession = sessionmaker(bind=sqlite_engine)

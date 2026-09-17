@@ -5,6 +5,7 @@ from flask import Blueprint, render_template, redirect, url_for, flash, request,
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 from models import db, AdminUser, SiteProfile, Skill, Project, Research, Experience, Message, SiteSetting
+from utils import convert_gdrive_url
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
@@ -97,7 +98,7 @@ def profile():
 
         avatar_input = request.form.get('avatar_url', '').strip()
         if avatar_input:
-            profile.avatar_url = avatar_input
+            profile.avatar_url = convert_gdrive_url(avatar_input)
 
         profile.resume_url = request.form.get('resume_url', '').strip()
         profile.github_url = request.form.get('github_url', '').strip()
@@ -202,7 +203,7 @@ def add_project():
         category = request.form.get('category', 'Web Application').strip()
         short_description = request.form.get('short_description', '').strip()
         detailed_description = request.form.get('detailed_description', '').strip()
-        image_url = request.form.get('image_url', '').strip()
+        image_url = convert_gdrive_url(request.form.get('image_url', '').strip())
         github_url = request.form.get('github_url', '').strip()
         demo_url = request.form.get('demo_url', '').strip()
         tags = request.form.get('tags', '').strip()
@@ -266,7 +267,7 @@ def edit_project(id):
         project.short_description = request.form.get('short_description', '').strip()
         project.detailed_description = request.form.get('detailed_description', '').strip()
         
-        image_url = request.form.get('image_url', '').strip()
+        image_url = convert_gdrive_url(request.form.get('image_url', '').strip())
         image_file = request.files.get('image_file')
         if image_file and image_file.filename != '':
             try:

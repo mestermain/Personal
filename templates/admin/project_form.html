@@ -48,7 +48,7 @@
                     {% if project and project.image_url %}
                         <div class="md:col-span-5">
                             <div class="project-img-frame mb-1">
-                                <img src="{{ project.image_url }}" alt="Preview">
+                                <img src="{{ project.image_url | gdrive_url }}" alt="Preview">
                             </div>
                             <div class="text-[10px] font-mono text-center text-[#8E1B1B]">Current Image Preview</div>
                         </div>
@@ -56,8 +56,9 @@
 
                     <div class="{{ 'md:col-span-7' if project and project.image_url else 'md:col-span-12' }} space-y-4">
                         <div>
-                            <label for="image_url" class="form-label-pro">Image Thumbnail URL</label>
-                            <input type="text" id="image_url" name="image_url" value="{{ project.image_url if project else '' }}" placeholder="https://images.unsplash.com/... or /static/uploads/..." class="form-input-pro">
+                            <label for="image_url" class="form-label-pro">Image Thumbnail URL / Google Drive Share Link</label>
+                            <input type="text" id="image_url" name="image_url" value="{{ project.image_url if project else '' }}" placeholder="Paste image link or Google Drive link (https://drive.google.com/...)" class="form-input-pro">
+                            <p class="text-[11px] text-[#C62828] font-mono mt-1"><i class="fab fa-google-drive me-1"></i> Google Drive share links supported! Copy & paste your Google Drive link here.</p>
                         </div>
 
                         <div>

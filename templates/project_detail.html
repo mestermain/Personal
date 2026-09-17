@@ -51,7 +51,7 @@
 
             <!-- Banner Image -->
             <div class="project-img-frame max-h-[480px]">
-                <img src="{{ project.image_url }}" alt="{{ project.title }}" class="w-full h-full object-cover">
+                <img src="{{ project.image_url | gdrive_url }}" alt="{{ project.title }}" class="w-full h-full object-cover">
             </div>
 
             <!-- Content & Tech Stack Grid -->

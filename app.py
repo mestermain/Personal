@@ -8,6 +8,7 @@ from sqlalchemy.engine import Engine
 from routes import main_bp
 from auth import auth_bp
 from admin import admin_bp
+from utils import convert_gdrive_url
 
 import urllib.parse
 
@@ -59,8 +60,14 @@ def create_app():
     
     # Database Configuration (PostgreSQL / Supabase in Production, SQLite in Development)
     raw_db_url = os.environ.get('DATABASE_URL')
+    engine_options = {
+        'pool_pre_ping': True,
+        'pool_recycle': 280,
+    }
     if raw_db_url:
         db_url = sanitize_database_url(raw_db_url)
+        if 'psycopg' in db_url:
+            engine_options['connect_args'] = {'prepare_threshold': None}
     else:
         db_path = os.path.join(app.root_path, 'instance', 'personal_web.db')
         os.makedirs(os.path.dirname(db_path), exist_ok=True)
@@ -68,11 +75,7 @@ def create_app():
         
     app.config['SQLALCHEMY_DATABASE_URI'] = db_url
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    
-    app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
-        'pool_pre_ping': True,
-        'pool_recycle': 280,
-    }
+    app.config['SQLALCHEMY_ENGINE_OPTIONS'] = engine_options
     
     # Maximum upload size (16MB)
     app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
@@ -93,6 +96,11 @@ def create_app():
     app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(admin_bp)
+
+    # Register Custom Template Filters
+    @app.template_filter('gdrive_url')
+    def gdrive_url_filter(url):
+        return convert_gdrive_url(url)
 
     # Register Custom Error Handlers
     @app.errorhandler(404)
